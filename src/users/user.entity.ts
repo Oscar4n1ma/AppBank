@@ -9,4 +9,5 @@ export class User {
     apellido: string
     fechaNacimiento: Date
     status: UserStatus
+    password: string
 }

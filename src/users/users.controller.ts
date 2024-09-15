@@ -7,13 +7,13 @@ export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Get()
-    getAllUsers(){
+    getAllUsers() {
         return this.usersService.getAllUsers()
     }
 
     @Post()
     createUser(@Body() newUser: CreateUserDto) {
-        return this.usersService.createUser(newUser.nombre, newUser.apellido, newUser.fechaNacimiento)
+        this.usersService.createUser(newUser.nombre, newUser.apellido, newUser.fechaNacimiento, newUser.password)
     }
 
 

@@ -11,4 +11,7 @@ export class CreateUserDto {
     apellido: string
 
     fechaNacimiento:Date
+
+    @IsString()
+    password:string
 }
