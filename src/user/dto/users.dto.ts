@@ -1,4 +1,4 @@
-import { UserStatus } from '../user.entity';
+import { UserStatus } from '../entities/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginUserDto {
