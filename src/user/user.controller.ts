@@ -1,6 +1,6 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { UsersService } from './user.service';
-import { CreateUserDto } from './dto/users.dto';
+import { CreateUserDto, LoginUserDto } from './dto/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -18,5 +18,11 @@ export class UsersController {
         cause: error.message,
       });
     }
+  }
+
+  @Post('/login')
+  async loginUser(@Body() loginUser: LoginUserDto) {
+    const userId: string = await this.usersService.loginUser(loginUser);
+    return userId;
   }
 }

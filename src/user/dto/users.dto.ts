@@ -1,6 +1,18 @@
 import { UserStatus } from '../user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 
+export class LoginUserDto {
+  @IsString()
+  username: string;
+
+  @IsString()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()

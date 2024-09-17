@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User, UserStatus } from './user.entity';
 import { hash, genSalt } from 'bcrypt';
-import { CreateUserDto } from './dto/users.dto';
+import { CreateUserDto, LoginUserDto } from './dto/users.dto';
 import MongoUserRepository from './MongoUserRepository';
 
 @Injectable()
@@ -34,6 +34,11 @@ export class UsersService {
 
     const userId: string = await this.userRepository.create(newUser);
 
+    return userId;
+  }
+
+  async loginUser(user: LoginUserDto) {
+    const userId: string = await this.userRepository.logIn(user);
     return userId;
   }
 }
