@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.entity';
-import UserRepository from './User.repository';
-import { Collection, MongoClient } from 'mongodb';
+import { User } from './entities/user.entity';
+import UserRepository from './interfaces/User.repository';
+import { Collection } from 'mongodb';
+import MongoClientDb from 'src/config/MongoClientDb';
 
 @Injectable()
 export default class MongoUserRepository implements UserRepository {
-  private readonly client: MongoClient;
   private readonly userCollection: Collection;
-  constructor() {
-    this.client = new MongoClient(process.env.URI_MONGO_DB);
-    this.userCollection = this.client.db().collection('User');
+
+  constructor(private readonly mongoClientDb: MongoClientDb) {
+    this.userCollection = this.mongoClientDb.db().collection('User');
   }
+
   async exist(username: string, email: string): Promise<boolean> {
     const respDb = await this.userCollection.findOne(
       {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserStatus } from './user.entity';
+import { User, UserStatus } from './entities/user.entity';
 import { hash, genSalt } from 'bcrypt';
 import { CreateUserDto } from './dto/users.dto';
 import MongoUserRepository from './MongoUserRepository';
@@ -26,7 +26,7 @@ export class UsersService {
       user.email,
       user.firstName,
       user.lastName,
-      UserStatus.INACTIVO,
+      UserStatus.INACTIVE,
       hashedPassword,
       new Date(user.dateBorn),
       new Date(),
