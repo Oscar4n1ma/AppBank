@@ -48,7 +48,7 @@ export default class MongoUserRepository implements UserRepository {
       },
       { projection: { _id: 1, password: 1 } },
     );
-    if (!user) {
+    if (!userFound) {
       return 'El usuario no existe';
     }
     const isPasswordValid: boolean = await bcrypt.compare(
