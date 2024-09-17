@@ -25,11 +25,13 @@ export default class MongoUserRepository implements UserRepository {
   async create(user: User): Promise<string> {
     const respDb = await this.userCollection.insertOne({
       username: user.username,
-      password: user.password,
+      email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      status: user.status,
       dateBorn: user.dateBorn,
       createdAt: user.createdAt,
+      password: user.password,
     });
     return respDb.insertedId.toString();
   }
