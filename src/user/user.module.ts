@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './user.controller';
-import { UsersService } from './user.service';
-import MongoUserRepository from './MongoUserRepository';
+import { ClientService } from './client.service';
+import MongoClientRepository from './MongoClientRepository';
 import MongoClientDb from 'src/config/MongoClientDb';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, MongoUserRepository, MongoClientDb],
+  providers: [ClientService, MongoClientRepository, MongoClientDb],
 })
 export class UsersModule {}

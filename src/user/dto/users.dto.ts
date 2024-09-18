@@ -1,37 +1,44 @@
-import { UserStatus } from '../entities/user.entity';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class LoginUserDto {
+export class CreateClientDto {
   @IsString()
+  @IsNotEmpty()
   username: string;
-
-  @IsString()
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
-
   @IsString()
   @IsNotEmpty()
   password: string;
-}
-
-export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
-
+  phoneNumber: string;
   @IsString()
   @IsNotEmpty()
-  email: string;
-
+  address: string;
+  @IsString()
+  @IsNotEmpty()
+  cc: string;
+  @IsString()
+  @IsNotEmpty()
+  dateBorn: string;
+  @IsString()
+  @IsNotEmpty()
+  genre: string;
   @IsString()
   @IsNotEmpty()
   firstName: string;
-
   @IsString()
   @IsNotEmpty()
   lastName: string;
-  dateBorn: string;
-
+  @IsNumber()
+  monthlyIncome: string;
   @IsString()
-  password: string;
-  status: UserStatus;
+  @IsNotEmpty()
+  maritalStatus: string;
+  @IsString()
+  @IsNotEmpty()
+  currentJob: string;
 }
+
+export class CreateBusinessDto {}

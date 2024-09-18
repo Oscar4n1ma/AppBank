@@ -1,28 +1,35 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
-import { UsersService } from './user.service';
-import { CreateUserDto, LoginUserDto } from './dto/users.dto';
+import { ClientService } from './client.service';
+import { CreateClientDto, CreateBusinessDto } from './dto/users.dto';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private clientService: ClientService) {}
 
-  @Post()
-  async createUser(@Body() newUser: CreateUserDto) {
+  @Post('/client')
+  async createClient(@Body() client: CreateClientDto) {
     try {
-      const userId: string = await this.usersService.createUser(newUser);
+      const userId: string = await this.clientService.create(client);
       return {
-        userId,
+        state: 'ok',
+        data: { userId },
+      };
+    } catch (error) {
+      throw new HttpException({ state: 'error', error: error.message }, 400, {
+        cause: error.message,
+      });
+    }
+  }
+  @Post('/business')
+  async createBusiness(@Body() business: CreateBusinessDto) {
+    try {
+      return {
+        business,
       };
     } catch (error) {
       throw new HttpException({ status: 400, error: error.message }, 400, {
         cause: error.message,
       });
     }
-  }
-
-  @Post('/login')
-  async loginUser(@Body() loginUser: LoginUserDto) {
-    const userId: string = await this.usersService.loginUser(loginUser);
-    return userId;
   }
 }
