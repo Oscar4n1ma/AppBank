@@ -1,42 +1,58 @@
 import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 
-export class CreateClientDto {
+export class CreateUserClientDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
+  readonly username: string;
+
   @IsString()
   @IsNotEmpty()
-  email: string;
+  readonly email: string;
+
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  readonly firstName: string;
+
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  readonly lastName: string;
+
   @IsString()
   @IsNotEmpty()
-  dateBorn: string;
+  readonly dateBorn: string;
+
   @IsNumberString()
   @IsNotEmpty()
-  phoneNumber: string;
+  readonly phoneNumber: string;
+
   @IsString()
   @IsNotEmpty()
-  address: string;
+  readonly address: string;
+
   @IsNumberString()
   @IsNotEmpty()
-  cc: string;
-  @IsString()
-  @IsNotEmpty()
-  genre: string;
+  readonly cardPin: string;
+
   @IsNumberString()
   @IsNotEmpty()
-  monthlyIncome: string;
+  readonly cc: string;
+
   @IsString()
   @IsNotEmpty()
-  maritalStatus: string;
+  readonly genre: string;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  readonly monthlyIncome: string;
+
   @IsString()
   @IsNotEmpty()
-  currentJob: string;
+  readonly maritalStatus: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly currentJob: string;
+
   @IsString()
   @IsNotEmpty()
   password: string;
