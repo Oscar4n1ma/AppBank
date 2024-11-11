@@ -1,7 +1,6 @@
 import { UserStatus } from 'src/enums/user-status.enum';
-import User from '../interfaces/User.interface';
 
-export class Client implements User {
+export default interface User {
   id: string;
   username: string;
   password: string;
@@ -9,13 +8,9 @@ export class Client implements User {
   email: string;
   address: string;
   phoneNumber: string;
-  permissions: number[];
   roles: string[];
+  permissions: number[];
   status: UserStatus;
-  monthlyIncome: string;
-  currentJob: string;
-  maritalStatus: string;
-  dateBorn: string;
   updatedAt: Date;
   deletedAt: Date | null;
   createdAt: Date;
