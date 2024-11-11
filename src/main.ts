@@ -6,6 +6,9 @@ config({ path: '.env.development.local' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: true,
+  });
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(8000);
 }
