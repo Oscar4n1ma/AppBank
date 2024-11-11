@@ -1,5 +1,5 @@
-import { LoginUserDto } from '../dto/auth.dto';
+import { AuthUser } from '../entities/auth.entity';
 
 export default interface AuthRepository {
-  findCredentials: (credentials: LoginUserDto) => Promise<LoginUserDto>;
+  findCredentials: (credentials: AuthUser) => Promise<unknown>;
 }
