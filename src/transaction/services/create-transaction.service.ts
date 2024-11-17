@@ -94,7 +94,7 @@ export class CreateTransactionService {
       .reduce((x, y) => x + y, 0);
 
     if (accounts[0].balance < totaAmountTransaction) {
-      throw new BadRequestException('No tiene fondos estupido.');
+      throw new BadRequestException('No tiene fondos.');
     }
 
     const transactionId: string =

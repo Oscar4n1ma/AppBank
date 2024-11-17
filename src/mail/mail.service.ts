@@ -105,7 +105,7 @@ export class MailService {
     try {
       const formattedDate = date.toLocaleString(); // Convierte la fecha a un formato legible
 
-      const info = await this.transporter.sendMail({
+      await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,
         subject: 'Notificación de Transacción Realizada',
@@ -135,18 +135,15 @@ export class MailService {
 
       <!-- Pie de página -->
       <div style="background-color: black; color: white; padding: 15px; text-align: center;">
-        <p style="margin: 0;">Saludos,<br><strong>AppBank</strong></p>
+        <p style="margin: 0;" > Saludos<br><strong>AppBank</strong></p>
       </div>
     </div>
   </div>`,
       });
 
-      console.log(
-        'Correo de notificación de transacción enviado: %s',
-        info.messageId,
-      );
+      console.log('Correo de notificación de transacción enviado');
     } catch (error) {
-      console.error(
+      console.log(
         'Error al enviar el correo de notificación de transacción:',
         error,
       );
