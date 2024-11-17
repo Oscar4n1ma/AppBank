@@ -24,7 +24,7 @@ export class MailService {
     username: string,
   ): Promise<void> {
     try {
-      const info = await this.transporter.sendMail({
+      await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>', // Cambia "Tu Aplicación" por el nombre de tu app
         to: email,
         subject: 'Registro Exitoso',
@@ -35,15 +35,15 @@ export class MailService {
           <p>Ahora puedes iniciar sesión y disfrutar de todos nuestros servicios.</p>
         `,
       });
-      console.log('Correo de notificación enviado: %s', info.messageId);
+      //console.log('Correo de notificación enviado: %s', info.messageId);
     } catch (error) {
-      console.error('Error al enviar el correo de notificación:', error);
+      throw error;
     }
   }
 
   async sendOtpEmail(email: string, otpCode: string): Promise<void> {
     try {
-      const info = await this.transporter.sendMail({
+      await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,
         subject: 'Código de Verificación OTP',
@@ -54,10 +54,9 @@ export class MailService {
           <p>Ingresa este código en la aplicación para activar tu cuenta.</p>
         `,
       });
-      console.log('Correo con OTP enviado: %s', info.messageId);
+      // console.log('Correo con OTP enviado: %s', info.messageId);
     } catch (error) {
-      console.error('Error al enviar el correo de OTP:', error);
-      throw new Error('Error al enviar el correo de OTP');
+      throw error;
     }
   }
 
@@ -66,7 +65,7 @@ export class MailService {
       // Construye el enlace completo con el token
       const recoveryLink = `http://localhost:4000/forms/newpass?t=${token}`;
 
-      const info = await this.transporter.sendMail({
+      await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,
         subject: 'Enlace para reestablecer contraseña',
@@ -89,10 +88,9 @@ export class MailService {
         `,
       });
 
-      console.log('Correo con enlace enviado: %s', info.messageId);
+      // console.log('Correo con enlace enviado: %s', info.messageId);
     } catch (error) {
-      console.error('Error al enviar el correo de recuperación:', error);
-      throw new Error('Error al enviar el correo de recuperación');
+      throw error;
     }
   }
   async notifyTransaction(
@@ -141,15 +139,9 @@ export class MailService {
   </div>`,
       });
 
-      console.log('Correo de notificación de transacción enviado');
+      // console.log('Correo de notificación de transacción enviado');
     } catch (error) {
-      console.log(
-        'Error al enviar el correo de notificación de transacción:',
-        error,
-      );
-      throw new Error(
-        'Error al enviar el correo de notificación de transacción',
-      );
+      throw error;
     }
   }
 }

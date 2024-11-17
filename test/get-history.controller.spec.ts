@@ -21,9 +21,10 @@ describe('Obtener el historial de transacciones', () => {
   });
 
   it('Obtener historial de transacciones de una cuenta existente', async () => {
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .get('/transaction/history/10000000005')
       .expect(200);
+    expect(response.body.data.length).toBeGreaterThan(0);
   });
 
   it('Obtener historial de transacciones de una cuenta que no existe', async () => {

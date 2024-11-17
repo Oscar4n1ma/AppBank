@@ -25,8 +25,6 @@ describe('Get user info', () => {
     const response = await request(app.getHttpServer())
       .get('/user/65466')
       .expect(500);
-
-    console.log(response.body);
     expect(response.body).toEqual({
       error: true,
       msg: 'Internal server error.',

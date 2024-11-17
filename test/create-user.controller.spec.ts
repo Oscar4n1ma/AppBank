@@ -61,7 +61,7 @@ describe('Creacion de usuarios', () => {
       .expect(201);
   });
 
-  it('Creat usuario cliente con datos que existeb', async () => {
+  it('Creat usuario cliente con datos que existen', async () => {
     const response = await request(app.getHttpServer())
       .post('/user/client')
       .send({
