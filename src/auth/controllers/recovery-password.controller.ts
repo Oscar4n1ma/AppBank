@@ -1,15 +1,13 @@
-import {
-  Body,
-  Controller,
-  HttpException,
-  NotFoundException,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { RecoveryPasswordService } from '../services/recovery-password.service';
+import { ErrorHandler } from 'src/utils/error-handler';
 
 @Controller('recovery-password')
 export class RecoveryPasswordController {
-  constructor(private recoveryPasswordService: RecoveryPasswordService) {}
+  constructor(
+    private recoveryPasswordService: RecoveryPasswordService,
+    private readonly errorHandler: ErrorHandler,
+  ) {}
 
   @Post()
   async use(@Body('email') email: string) {
@@ -20,10 +18,7 @@ export class RecoveryPasswordController {
         res,
       };
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException({ error: true, msg: error.message }, 404);
-      }
-      throw new HttpException({ error: true, msg: error.message }, 400);
+      this.errorHandler.use(error);
     }
   }
 }

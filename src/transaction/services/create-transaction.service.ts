@@ -3,12 +3,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
 import { CreateTransactionDto } from '../dtos/create-transaction';
 import MongoTransactionRepository from '../repositories/MongoTransactionRepository';
+import MongoUserRepository from 'src/user/repositories/MongoUserRepository';
+import { UserStatus } from 'src/enums/user-status.enum';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class CreateTransactionService {
   constructor(
     private readonly accountRepository: MongoAccountRepository,
+    protected readonly userRepository: MongoUserRepository,
     private readonly transactionRepository: MongoTransactionRepository,
+    private readonly mailService: MailService,
   ) {}
 
   async use(transaction: CreateTransactionDto) {
@@ -18,9 +23,18 @@ export class CreateTransactionService {
       this.accountRepository.get(fromProduct),
       this.accountRepository.get(toProduct),
       this.transactionRepository.amountTransferedPerDay(fromProduct),
+      this.userRepository.get(transaction.userId),
     ]);
+    // verificaciones de las cuentas
     if (!accounts[0]) {
       throw new BadRequestException('La cuenta de origin no existe.');
+    }
+    if (accounts[0].owner.toString() !== transaction.userId) {
+      throw new BadRequestException('Esta cuenta no le pertence al usuario.');
+    }
+
+    if (accounts[3].state !== UserStatus.ACTIVE) {
+      throw new BadRequestException('El usuario no se encuentra activo');
     }
     if (!accounts[0].state) {
       throw new BadRequestException(
@@ -30,6 +44,13 @@ export class CreateTransactionService {
     if (!accounts[1]) {
       throw new BadRequestException('La cuenta destino no existe.');
     }
+    if (!accounts[1].state) {
+      throw new BadRequestException(
+        'La cuenta de destino no se encuentra activa.',
+      );
+    }
+
+    //verificacione para realizar la transaccion
     if (accounts[2] + amount > accounts[0].amountTransfersLimit) {
       throw new BadRequestException(
         'El limite de transferencias por dia ya ha sido superado.',
@@ -79,6 +100,13 @@ export class CreateTransactionService {
     const transactionId: string =
       await this.transactionRepository.create(transactions);
 
+    void this.mailService.notifyTransaction(
+      accounts[3].email,
+      totaAmountTransaction,
+      `${transaction.fromProduct.toString().slice(5)}****`,
+      `${transaction.toProduct.toString().slice(5)}****`,
+      new Date(),
+    );
     return {
       transactionId,
     };

@@ -3,6 +3,7 @@ import { Collection, ObjectId } from 'mongodb';
 import MongoClientDb from 'src/config/MongoClientDb';
 import AuthRepository from './interfaces/AuthRepository';
 import { AuthUser } from './entities/auth.entity';
+import { UserStatus } from 'src/enums/user-status.enum';
 
 @Injectable()
 export default class MongoAuthRepository implements AuthRepository {
@@ -70,7 +71,7 @@ export default class MongoAuthRepository implements AuthRepository {
     const objectId = new ObjectId(userId);
     const result = await this.userCollection.updateOne(
       { _id: objectId },
-      { $set: { status: true } },
+      { $set: { state: UserStatus.ACTIVE } },
     );
 
     if (result.modifiedCount === 0) {

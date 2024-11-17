@@ -1,23 +1,25 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ConfirmAccountDto } from '../dto/confirm-account.dto';
 import { ConfirmAccountService } from '../services/confirm-account.service';
+import { ErrorHandler } from 'src/utils/error-handler';
 
 @Controller('confirm-account')
 export class ConfirmAccountController {
-  constructor(private confirmAccountService: ConfirmAccountService) {}
+  constructor(
+    private readonly confirmAccountService: ConfirmAccountService,
+    private readonly errorHandler: ErrorHandler,
+  ) {}
 
   @Post()
   async use(@Body() confirmAccount: ConfirmAccountDto) {
     try {
-      const confirmed = await this.confirmAccountService.use(confirmAccount);
+      await this.confirmAccountService.use(confirmAccount);
       return {
         error: true,
-        msg: confirmed,
+        msg: 'Su cuenta fue activada con exito',
       };
     } catch (error) {
-      throw new HttpException({ status: 400, error: error.message }, 400, {
-        cause: error.message,
-      });
+      this.errorHandler.use(error);
     }
   }
 }

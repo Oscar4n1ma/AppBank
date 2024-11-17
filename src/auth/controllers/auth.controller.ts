@@ -1,10 +1,14 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { LoginUserDto } from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
+import { ErrorHandler } from 'src/utils/error-handler';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private readonly errorHandler: ErrorHandler,
+  ) {}
 
   @Post()
   async authenticate(@Body() loginUser: LoginUserDto) {
@@ -15,9 +19,7 @@ export class AuthController {
         data: res,
       };
     } catch (error) {
-      throw new HttpException({ error: true, msg: error.message }, 400, {
-        cause: error.message,
-      });
+      this.errorHandler.use(error);
     }
   }
 }

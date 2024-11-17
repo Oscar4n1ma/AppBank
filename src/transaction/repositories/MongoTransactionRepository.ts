@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-
 import { Collection } from 'mongodb';
 import MongoClientDb from 'src/config/MongoClientDb';
 
@@ -73,17 +72,24 @@ export default class MongoTransactionRepository {
       session.startTransaction({ retryWrites: true });
       const createdAt: Date = new Date();
       const transactionsId: string[] = [];
+      const mainTransaction = transactions[0];
+
+      const totaAmountTransaction = transactions
+        .map((t) => t.amount)
+        .reduce((x, y) => x + y, 0);
+
+      await this.accountCollection.updateOne(
+        {
+          id: mainTransaction.fromProduct,
+        },
+        { $inc: { balance: -totaAmountTransaction } },
+        {
+          session,
+        },
+      );
+
       for (let i = 0; i < transactions.length; i++) {
         const t = transactions[i];
-        await this.accountCollection.updateOne(
-          {
-            id: t.fromProduct,
-          },
-          { $inc: { balance: -t.amount } },
-          {
-            session,
-          },
-        );
         await this.accountCollection.updateOne(
           {
             id: t.toProduct,

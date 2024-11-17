@@ -2,16 +2,12 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
-import { OtpService } from 'src/otp-service/otp.service';
 
 @Injectable()
 export class MailService {
   private transporter: Transporter;
 
-  constructor(
-    private configService: ConfigService,
-    private readonly otpService: OtpService,
-  ) {
+  constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('MAIL_HOST'),
       port: this.configService.get<number>('MAIL_PORT'),
@@ -23,15 +19,18 @@ export class MailService {
     });
   }
 
-  async sendRegistrationNotification(email: string): Promise<void> {
+  async sendRegistrationNotification(
+    email: string,
+    username: string,
+  ): Promise<void> {
     try {
       const info = await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>', // Cambia "Tu Aplicación" por el nombre de tu app
         to: email,
         subject: 'Registro Exitoso',
-        text: '¡Bienvenido! Tu registro en nuestra aplicación fue exitoso.',
+        text: `¡Bienvenido! Tu registro en nuestra aplicación fue exitoso.`,
         html: `
-          <h1>¡Bienvenido!</h1>
+          <h1>¡Bienvenido ${username}!</h1>
           <p>Tu registro en nuestra aplicación fue exitoso.</p>
           <p>Ahora puedes iniciar sesión y disfrutar de todos nuestros servicios.</p>
         `,
@@ -96,5 +95,64 @@ export class MailService {
       throw new Error('Error al enviar el correo de recuperación');
     }
   }
+  async notifyTransaction(
+    email: string,
+    amount: number,
+    accountNumber: string,
+    receptorAccountNumber: string,
+    date: Date,
+  ): Promise<void> {
+    try {
+      const formattedDate = date.toLocaleString(); // Convierte la fecha a un formato legible
+
+      const info = await this.transporter.sendMail({
+        from: '"AppBank" <appbankinfo@gmail.com>',
+        to: email,
+        subject: 'Notificación de Transacción Realizada',
+        text: `Se ha realizado una transacción desde tu cuenta.`,
+        html: `
+  <div style="font-family: Arial, sans-serif; background-color: white; padding: 20px; color: white;">
+    <div style="max-width: 600px; margin: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <!-- Encabezado -->
+      <div style="background-color: black; color:white; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 24px;">Notificación de Transacción</h1>
+      </div>
+
+      <!-- Contenido -->
+      <div style="padding: 20px; background-color: #ffffff; color: black;">
+        <p>Estimado cliente,</p>
+        <p>Te informamos que se ha realizado una transacción desde tu cuenta con los siguientes detalles:</p>
+        
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 8px;"><strong style="color: black;">Monto:</strong> $${amount}</li>
+          <li style="margin-bottom: 8px;"><strong style="color: black;">Producto origen:</strong> ${accountNumber}</li>
+          <li style="margin-bottom: 8px;"><strong style="color: black;">Producto destino:</strong> ${receptorAccountNumber}</li>
+          <li style="margin-bottom: 8px;"><strong style="color: black;">Fecha:</strong> ${formattedDate}</li>
+        </ul>
+        
+        <p style="margin-top: 20px;">Si no reconoces esta transacción, contacta a nuestro equipo de soporte de inmediato.</p>
+      </div>
+
+      <!-- Pie de página -->
+      <div style="background-color: black; color: white; padding: 15px; text-align: center;">
+        <p style="margin: 0;">Saludos,<br><strong>AppBank</strong></p>
+      </div>
+    </div>
+  </div>`,
+      });
+
+      console.log(
+        'Correo de notificación de transacción enviado: %s',
+        info.messageId,
+      );
+    } catch (error) {
+      console.error(
+        'Error al enviar el correo de notificación de transacción:',
+        error,
+      );
+      throw new Error(
+        'Error al enviar el correo de notificación de transacción',
+      );
+    }
+  }
 }
-//http://localhost:4000/forms/recoverpass?t=<token>

@@ -1,10 +1,14 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { Verify2FaService } from '../services/verify2fa.service';
 import { Verify2FaDto } from '../dto/verify2fa.dto';
+import { ErrorHandler } from 'src/utils/error-handler';
 
 @Controller('verify2fa')
 export class Verify2FaController {
-  constructor(private verify2FaService: Verify2FaService) {}
+  constructor(
+    private verify2FaService: Verify2FaService,
+    private readonly errorHandler: ErrorHandler,
+  ) {}
 
   @Post()
   async use(@Body() verify2Fa: Verify2FaDto) {
@@ -16,9 +20,7 @@ export class Verify2FaController {
         token: token,
       };
     } catch (error) {
-      throw new HttpException({ status: 400, error: error.message }, 400, {
-        cause: error.message,
-      });
+      this.errorHandler.use(error);
     }
   }
 }

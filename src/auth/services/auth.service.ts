@@ -3,15 +3,17 @@ import { LoginUserDto } from 'src/auth/dto/auth.dto';
 import MongoAuthRepository from '../MongoAuthRepository';
 import { compare } from 'bcrypt';
 import { AuthUser } from '../entities/auth.entity';
-import { OtpService } from 'src/otp-service/otp.service';
+import { OtpService } from 'src/otp-service/services/otp.service';
 import MongoOtpsRepository from 'src/otp-service/repositories/MongoOtpsRepository';
 import { sign } from 'jsonwebtoken';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepository: MongoAuthRepository,
     private readonly otpRepository: MongoOtpsRepository,
+    private readonly mailService: MailService,
     private readonly otpService: OtpService,
   ) {}
 
@@ -38,7 +40,7 @@ export class AuthService {
     if (_2fa) {
       const otp: number = this.otpService.generateOtp();
       await this.otpRepository.create(email, otp);
-      //  void this.mailService.sendOtpEmail(email, String(otp));
+      void this.mailService.sendOtpEmail(email, String(otp));
     } else {
       const jwtSecret = process.env.SECRET_KEY_JWT;
       accessToken = sign({ userId: _id }, jwtSecret);

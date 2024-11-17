@@ -11,6 +11,7 @@ import MongoAccountRepository from './repositories/MongoAccountRepository';
 @Module({
   imports: [MongoClientModule],
   controllers: [GetAccountrController, GetCardController],
+  exports: [MongoAccountRepository, MongoCardRepository],
   providers: [
     GetAccountService,
     GetCardService,

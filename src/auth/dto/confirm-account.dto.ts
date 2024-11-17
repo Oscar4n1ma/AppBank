@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
 
 export class ConfirmAccountDto {
   @IsString()
   @IsNotEmpty()
   email: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   otp: number;
 }

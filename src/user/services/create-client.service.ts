@@ -9,6 +9,9 @@ import MongoCardRepository from 'src/product/repositories/MongoCardRepository';
 import { Account } from 'src/product/entities/Account';
 import { ObjectId } from 'mongodb';
 import { Card } from 'src/product/entities/Card';
+import { MailService } from 'src/mail/mail.service';
+import { OtpService } from 'src/otp-service/services/otp.service';
+import MongoOtpsRepository from 'src/otp-service/repositories/MongoOtpsRepository';
 
 @Injectable()
 export class CreateUserClientService {
@@ -16,6 +19,9 @@ export class CreateUserClientService {
     private readonly userRepository: MongoUserRepository,
     private readonly accountRepository: MongoAccountRepository,
     private readonly cardRepository: MongoCardRepository,
+    private readonly otpRepository: MongoOtpsRepository,
+    private readonly otpServices: OtpService,
+    private readonly mailService: MailService,
   ) {}
 
   async use(user: CreateUserClientDto) {
@@ -98,10 +104,18 @@ export class CreateUserClientService {
       updatedAt: createdAt,
     };
 
+    const otp: number = this.otpServices.generateOtp();
     await Promise.all([
       this.accountRepository.create(productAccount),
       this.cardRepository.create(productCard),
+      this.otpRepository.create(user.email, otp),
     ]);
+    //envia correos
+    void this.mailService.sendRegistrationNotification(
+      user.email,
+      user.username,
+    );
+    void this.mailService.sendOtpEmail(user.email, String(otp));
 
     return userId;
   }

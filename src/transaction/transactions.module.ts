@@ -1,22 +1,28 @@
 import { Module } from '@nestjs/common';
 import { CreateTransactionController } from './controllers/create-transaction.controller';
 import { CreateTransactionService } from './services/create-transaction.service';
-import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
-import { ErrorHandler } from 'src/utils/error-handler';
-import MongoTransactionRepository from './repositories/MongoTransactionRepository';
 import { GetTransactionController } from './controllers/get-transactions.controller';
 import { GetTransactionService } from './services/get-transactions.service';
 import { MongoClientModule } from 'src/config/mongo-client.module';
+import { ProductModule } from 'src/product/product.module';
+import MongoTransactionRepository from './repositories/MongoTransactionRepository';
+import { UsersModule } from 'src/user/user.module';
+import { UtilsModule } from 'src/utils/utils.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
-  imports: [MongoClientModule],
+  imports: [
+    MongoClientModule,
+    ProductModule,
+    UsersModule,
+    UtilsModule,
+    MailModule,
+  ],
   controllers: [CreateTransactionController, GetTransactionController],
   providers: [
     CreateTransactionService,
-    MongoAccountRepository,
-    MongoTransactionRepository,
     GetTransactionService,
-    ErrorHandler,
+    MongoTransactionRepository,
   ],
 })
 export class TransactionsModule {}
