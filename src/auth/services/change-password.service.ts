@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import MongoAuthRepository from '../MongoAuthRepository';
 import { verify } from 'jsonwebtoken';
 import { ChangePasswordDto } from '../dto/change-password.dto';
@@ -12,7 +12,7 @@ export class ChangePasswordService {
     const jwtSecret = process.env.SECRET_KEY_JWT;
 
     if (newPassword != confirmNewPassword) {
-      return 'Las contraseñas no son iguales';
+      throw new BadRequestException('Las contraseñas no son iguales');
     }
     const { id: extractedId } = verify(t, jwtSecret) as { id: string };
     const hashedPassword = await hash(newPassword, await genSalt());
