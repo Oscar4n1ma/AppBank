@@ -48,6 +48,7 @@ export class CreateUserClientService {
       type: 'client',
       data: {
         cc: user.cc,
+        phoneNumber: user.phoneNumber,
         genre: user.genre,
         firstName: user.firstName,
         lastName: user.lastName,

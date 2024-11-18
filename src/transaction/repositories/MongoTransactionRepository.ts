@@ -90,17 +90,19 @@ export default class MongoTransactionRepository {
 
       for (let i = 0; i < transactions.length; i++) {
         const t = transactions[i];
-        await this.accountCollection.updateOne(
-          {
-            id: t.toProduct,
-          },
-          {
-            $inc: { balance: t.amount },
-          },
-          {
-            session,
-          },
-        );
+        if (t.toProduct !== process.env.ACCOUNT_ID_APP_BANK) {
+          await this.accountCollection.updateOne(
+            {
+              id: t.toProduct,
+            },
+            {
+              $inc: { balance: t.amount },
+            },
+            {
+              session,
+            },
+          );
+        }
         const respDb = await this.transactionCollection.insertOne(
           {
             ...t,

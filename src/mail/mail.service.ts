@@ -64,7 +64,6 @@ export class MailService {
     try {
       // Construye el enlace completo con el token
       const recoveryLink = `http://localhost:4000/forms/newpass?t=${token}`;
-
       await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,
@@ -102,7 +101,6 @@ export class MailService {
   ): Promise<void> {
     try {
       const formattedDate = date.toLocaleString(); // Convierte la fecha a un formato legible
-
       await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,

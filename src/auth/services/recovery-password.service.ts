@@ -11,7 +11,6 @@ export class RecoveryPasswordService {
   ) {}
   async use(email: string) {
     const credentialsFound = await this.authRepository.findIdByEmail(email);
-    console.log(credentialsFound);
     if (!credentialsFound) {
       throw new NotFoundException('El correo no existe');
     }
@@ -19,7 +18,6 @@ export class RecoveryPasswordService {
     const jwtSecret = process.env.SECRET_KEY_JWT;
     const token = sign({ id }, jwtSecret);
     this.mailService.sendChangePasswordEmail(email, token);
-
     return `Correo enviado a ${email}`;
   }
 }

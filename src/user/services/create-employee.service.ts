@@ -33,6 +33,7 @@ export class CreateUserEmployeeService {
       type: 'employee',
       data: {
         cc: user.cc,
+        phoneNumber: user.phoneNumber,
         genre: user.genre,
         firstName: user.firstName,
         lastName: user.lastName,

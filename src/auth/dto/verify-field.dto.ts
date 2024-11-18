@@ -1,4 +1,4 @@
-import { IsOptional, IsEmail, IsString, IsPhoneNumber } from 'class-validator';
+import { IsOptional, IsEmail, IsString } from 'class-validator';
 
 export class VerifyFieldDto {
   @IsOptional()
@@ -10,6 +10,10 @@ export class VerifyFieldDto {
   cc?: string;
 
   @IsOptional()
-  @IsPhoneNumber(null)
-  telefono?: string;
+  @IsString()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  username?: string;
 }

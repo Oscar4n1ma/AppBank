@@ -46,6 +46,7 @@ export class CreateUserEnterpriseService {
       state: UserStatus.DEACTIVATE,
       type: 'enterprise',
       data: {
+        phoneNumber: user.phoneNumber,
         ownerCc: user.ownerCc,
         address: user.address,
         name: user.name,
