@@ -61,7 +61,7 @@ export class CreateTransactionService {
         toProduct,
         fromProduct,
         amount,
-        description,
+        description: `Pago en ${accounts[1].description} ${toProduct.toString().slice(5)}****`,
       },
     ];
 

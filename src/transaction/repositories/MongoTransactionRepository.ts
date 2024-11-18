@@ -37,6 +37,7 @@ export default class MongoTransactionRepository {
           sort: {
             createdAt: -1,
           },
+          limit: 30,
         },
       )
       .toArray();
