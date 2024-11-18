@@ -78,11 +78,11 @@ describe('ChangePasswordController', () => {
       .post('/change-password')
       .set('Authorization', `Bearer ${invalidToken}`)
       .send(mockPasswordDto)
-      .expect(401); // El código de error dependerá de cómo manejes los errores en tu app
+      .expect(401);
 
     expect(response.body).toEqual({
       error: true,
-      msg: 'El token es invalido o ya expiro.', // Deberías devolver este mensaje si ocurre un error con el token
+      msg: 'El token es invalido o ya expiro.',
     });
   });
 

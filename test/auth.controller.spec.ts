@@ -59,7 +59,7 @@ describe('Autentificacion de usuarios', () => {
 
   it('Iniciar sesión con datos correctos', async () => {
     const user = 'Oscar';
-    const password = '12345';
+    const password = '123';
 
     const response = await request(app.getHttpServer())
       .post('/auth')

@@ -9,7 +9,7 @@ import { VerifyFieldController } from 'src/auth/controllers/verify-field.control
 import { VerifyFieldService } from 'src/auth/services/verify-field.service';
 import { ErrorHandler } from 'src/utils/error-handler';
 
-describe('Autentificacion de usuarios', () => {
+describe('Verifica si existe el correo/cedula/telefono', () => {
   let app: INestApplication;
 
   beforeEach(async () => {

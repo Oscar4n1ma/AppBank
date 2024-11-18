@@ -12,7 +12,7 @@ import { RecoveryPasswordService } from 'src/auth/services/recovery-password.ser
 import MongoAuthRepository from 'src/auth/MongoAuthRepository';
 import MongoOtpsRepository from 'src/otp-service/repositories/MongoOtpsRepository';
 
-describe('Autentificacion de usuarios', () => {
+describe('Solicita correo para reestablecimiento de contraseña', () => {
   let app: INestApplication;
   let mailServiceMock: jest.SpyInstance;
 
