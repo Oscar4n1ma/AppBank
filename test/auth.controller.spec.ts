@@ -42,7 +42,7 @@ describe('Autentificacion de usuarios', () => {
   });
 
   it('Iniciar sesion con datos que no existen', async () => {
-    const user = 'OscarTest';
+    const user = 'user_454545';
     const password = '1';
     const response = await request(app.getHttpServer())
       .post('/auth')
@@ -58,8 +58,8 @@ describe('Autentificacion de usuarios', () => {
   });
 
   it('Iniciar sesión con datos correctos', async () => {
-    const user = 'Oscar';
-    const password = '123';
+    const user = 'user_test';
+    const password = '12345';
 
     const response = await request(app.getHttpServer())
       .post('/auth')

@@ -32,14 +32,14 @@ describe('Obtener informacion de productos', () => {
 
   it('Obtener informacion de una cuenta', async () => {
     const response = await request(app.getHttpServer())
-      .get('/product/account/43402448815')
+      .get('/product/account/14953792358')
       .expect(200);
     expect(response.body).toEqual({
       error: false,
       msg: null,
       data: {
-        id: '43402448815',
-        owner: '673234157dca70cd358b0350',
+        id: '14953792358',
+        owner: '673b4bcfe4da126f8b97830a',
         state: true,
         name: 'account',
         description: 'Producto bancario appbank.',
@@ -48,10 +48,10 @@ describe('Obtener informacion de productos', () => {
         amountTransfersLimit: 3000000,
         topBalance: 100000000,
         interestRate: 0.001,
-        _4x1000: true,
-        balance: 3543384.043999998,
-        createdAt: '2024-11-11T16:43:01.476Z',
-        updatedAt: '2024-11-11T16:43:01.476Z',
+        _4x1000: false,
+        balance: 200.02800000000025,
+        createdAt: '2024-11-18T14:14:39.287Z',
+        updatedAt: '2024-11-18T14:14:39.287Z',
       },
     });
   });
@@ -68,15 +68,15 @@ describe('Obtener informacion de productos', () => {
 
   it('Obtener informacion de una tarjeta ', async () => {
     const response = await request(app.getHttpServer())
-      .get('/product/card/9372728532951912')
+      .get('/product/card/8800483229902363')
       .expect(200);
     expect(response.body).toEqual({
       error: false,
       msg: null,
       data: {
-        id: '9372728532951912',
-        accountAssociatedId: '43402448815',
-        owner: '673234157dca70cd358b0350',
+        id: '8800483229902363',
+        accountAssociatedId: '83423352527',
+        owner: '673b4ca7e4da126f8b97831a',
         description: 'Producto bancario de AppBank.',
         cardType: 'debit',
         amountCreditLimit: 0,
@@ -84,8 +84,8 @@ describe('Obtener informacion de productos', () => {
         cvc: 233,
         name: 'card',
         state: true,
-        createdAt: '2024-11-11T16:43:01.476Z',
-        expiredAt: '2028-11-11T16:43:01.476Z',
+        createdAt: '2024-11-18T14:18:15.044Z',
+        expiredAt: '2028-11-18T14:18:15.044Z',
       },
     });
   });

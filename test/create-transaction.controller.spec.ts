@@ -34,8 +34,8 @@ describe('Creacion de usuarios', () => {
     const response = await request(app.getHttpServer())
       .post('/transaction/init')
       .send({
-        userId: '6732642c2c3454374f79677e',
-        fromProduct: '21291975194',
+        userId: '673b64cc2c45fe6818168088',
+        fromProduct: '12971436983',
         toProduct: '10000000005',
         description: 'Pago en comercio electronico snapwire',
         amount: 200000,
@@ -51,11 +51,11 @@ describe('Creacion de usuarios', () => {
     await request(app.getHttpServer())
       .post('/transaction/init')
       .send({
-        userId: '6732642c2c3454374f79677e',
-        fromProduct: '21291975194',
+        userId: '673b64d02c45fe681816808d',
+        fromProduct: '26617236509',
         toProduct: '10000000005',
         description: 'Pago en comercio electronico snapwire',
-        amount: 60,
+        amount: 50,
       })
       .expect(201);
   });
@@ -65,7 +65,7 @@ describe('Creacion de usuarios', () => {
       .post('/transaction/init')
       .send({
         userId: '4732642c2c3454374f79677e',
-        fromProduct: '21291975194',
+        fromProduct: '14953792358',
         toProduct: '10000000005',
         description: 'Pago en comercio electronico snapwire',
         amount: 60,
@@ -82,8 +82,8 @@ describe('Creacion de usuarios', () => {
       .post('/transaction/init')
       .send({
         userId: '6732642c2c3454374f79677e',
-        fromProduct: '212919751934',
-        toProduct: '10000000005',
+        fromProduct: '149537923',
+        toProduct: '24878213',
         description: 'Pago en comercio electronico snapwire',
         amount: 60,
       })
@@ -99,9 +99,9 @@ describe('Creacion de usuarios', () => {
     const response = await request(app.getHttpServer())
       .post('/transaction/init')
       .send({
-        userId: '6732642c2c3454374f79677e',
-        fromProduct: '21291975194',
-        toProduct: '10000000002225',
+        userId: '673b4bcfe4da126f8b97830a',
+        fromProduct: '14953792358',
+        toProduct: '248782344313',
         description: 'Pago en comercio electronico snapwire',
         amount: 80,
       })

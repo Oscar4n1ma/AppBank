@@ -30,10 +30,10 @@ describe('ChangePasswordController', () => {
 
   it('Debería cambiar la contraseña exitosamente', async () => {
     const jwtSecret = process.env.SECRET_KEY_JWT;
-    const token = sign({ id: '673a9cf2a74ce891734629c9' }, jwtSecret);
+    const token = sign({ id: '673b4b65e4da126f8b9782fe' }, jwtSecret);
     const PasswordDto = {
-      newPassword: '123',
-      confirmNewPassword: '123',
+      newPassword: '123456789',
+      confirmNewPassword: '123456789',
     };
 
     const response = await request(app.getHttpServer())

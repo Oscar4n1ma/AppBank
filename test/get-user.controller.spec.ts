@@ -43,7 +43,7 @@ describe('Get user info', () => {
 
   it('Obtener informacion del usuario con id correcto y que si exista', async () => {
     await request(app.getHttpServer())
-      .get('/user/673234157dca70cd358b0350')
+      .get('/user/673b4b65e4da126f8b9782fe')
       .expect(200);
   });
   afterAll(async () => {

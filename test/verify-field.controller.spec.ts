@@ -42,7 +42,7 @@ describe('Verifica si existe el correo/cedula/telefono', () => {
   });
 
   it('Se verifica si existe la cedula ingresada', async () => {
-    const cc = '1006432255';
+    const cc = '100643344';
     const response = await request(app.getHttpServer())
       .post('/verify-field')
       .send({
@@ -59,8 +59,26 @@ describe('Verifica si existe el correo/cedula/telefono', () => {
     });
   });
 
+  it('Se verifica si existe el telefono ingresado', async () => {
+    const phoneNumber = '5732112218';
+    const response = await request(app.getHttpServer())
+      .post('/verify-field')
+      .send({
+        phoneNumber,
+      })
+      .expect(200);
+    expect(response.body).toEqual({
+      error: false,
+      msg: 'El dato ingresado fue encontrado en este id',
+      data: {
+        exists: true,
+        id: expect.any(String),
+      },
+    });
+  });
+
   it('Deberia devolver un error al no existir el dato ingresado', async () => {
-    const cc = '111';
+    const cc = '111353555535';
     const response = await request(app.getHttpServer())
       .post('/verify-field')
       .send({
