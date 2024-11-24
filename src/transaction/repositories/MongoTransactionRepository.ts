@@ -87,7 +87,7 @@ export default class MongoTransactionRepository {
             },
           },
         ],
-        { session },
+        { session, retryWrites: true },
       );
 
       const respDb = await this.transactionCollection.insertOne(transaction, {
@@ -143,7 +143,6 @@ export default class MongoTransactionRepository {
       await session.commitTransaction();
       return respDb.insertedId.toString();
     } catch (error) {
-      console.log(error);
       if (session.inTransaction()) {
         await session.abortTransaction();
       }

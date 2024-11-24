@@ -24,6 +24,7 @@ export default class MongoUserRepository implements UserRepository {
     );
     return respDb !== null;
   }
+
   async get(id: string) {
     const respDb = await this.userCollection.findOne(
       {
@@ -45,20 +46,10 @@ export default class MongoUserRepository implements UserRepository {
   }
 
   async create(user: unknown): Promise<string> {
-    const session = this.mongoClientDb.startSession();
-    try {
-      session.startTransaction();
-      const respDb = await this.userCollection.insertOne(user, { session });
-      await session.commitTransaction();
-      return respDb.insertedId.toString();
-    } catch (error) {
-      if (session.inTransaction()) {
-        await session.abortTransaction();
-      }
-    } finally {
-      await session.endSession();
-    }
+    const respDb = await this.userCollection.insertOne(user);
+    return respDb.insertedId.toString();
   }
+
   async delete(id: string) {
     const session = this.mongoClientDb.startSession();
     try {

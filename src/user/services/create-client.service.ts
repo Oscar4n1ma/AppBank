@@ -25,18 +25,22 @@ export class CreateUserClientService {
   ) {}
 
   async use(user: CreateUserClientDto) {
-    const existUser: boolean = await this.userRepository.exist(
-      user.email,
-      user.username,
-    );
-    if (existUser) {
-      throw new BadRequestException('El username o el correo ya existe');
+    const jobs = await Promise.all([
+      this.userRepository.exist(user.email, user.username),
+      hash(user.password, await genSalt()),
+      hash(user.cardPin, await genSalt()),
+    ]);
+
+    if (jobs[0]) {
+      throw new BadRequestException('El username o el correo ya existe.');
     }
     //se crea el usuario
-    const hashedPassword: string = await hash(user.password, await genSalt());
-    const hashedPin: string = await hash(user.cardPin, await genSalt());
+    const hashedPassword: string = jobs[1];
+    const hashedPin: string = jobs[2];
     const createdAt: Date = new Date();
+    const userId: ObjectId = new ObjectId();
     const userClient = {
+      _id: userId,
       username: user.username,
       email: user.email,
       password: hashedPassword,
@@ -63,14 +67,12 @@ export class CreateUserClientService {
       createdAt,
       deletedAt: null,
     };
-    const userId: string = await this.userRepository.create(userClient);
     //se crea su cuenta
     const accountId: string = Math.round(Math.random() * 1e11).toString();
     const cardId: string = Math.round(Math.random() * 1e16).toString();
-
     const productAccount: Account<string, ObjectId> = {
       id: accountId,
-      owner: new ObjectId(userId),
+      owner: userId,
       state: true,
       name: 'account',
       description: 'Producto bancario appbank.',
@@ -91,7 +93,7 @@ export class CreateUserClientService {
     const productCard: Card<string, ObjectId> = {
       id: cardId,
       accountAssociatedId: accountId,
-      owner: new ObjectId(userId),
+      owner: userId,
       description: 'Producto bancario de AppBank.',
       cardType: 'debit',
       amountCreditLimit: 0,
@@ -104,19 +106,19 @@ export class CreateUserClientService {
       deletedAt: null,
       updatedAt: createdAt,
     };
-
     const otp: number = this.otpServices.generateOtp();
     await Promise.all([
+      this.userRepository.create(userClient),
       this.accountRepository.create(productAccount),
       this.cardRepository.create(productCard),
       this.otpRepository.create(user.email, otp),
     ]);
     //envia correos
-    void this.mailService.sendRegistrationNotification(
-      user.email,
-      user.username,
-    );
-    void this.mailService.sendOtpEmail(user.email, String(otp));
+    // void this.mailService.sendRegistrationNotification(
+    //   user.email,
+    //   user.username,
+    // );
+    // void this.mailService.sendOtpEmail(user.email, String(otp));
 
     return userId;
   }

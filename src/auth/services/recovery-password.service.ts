@@ -17,7 +17,7 @@ export class RecoveryPasswordService {
     const id = credentialsFound._id;
     const jwtSecret = process.env.SECRET_KEY_JWT;
     const token = sign({ id }, jwtSecret);
-    this.mailService.sendChangePasswordEmail(email, token);
+    //this.mailService.sendChangePasswordEmail(email, token);
     return `Correo enviado a ${email}`;
   }
 }

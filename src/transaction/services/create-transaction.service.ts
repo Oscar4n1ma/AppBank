@@ -61,7 +61,7 @@ export class CreateTransactionService {
     const managementCosts: number = jobs[0].managementCosts;
     const transferCost: number = jobs[0].transferCost;
     const createdAt: Date = new Date();
-    
+
     const transaction = {
       toProduct,
       fromProduct,
@@ -92,13 +92,13 @@ export class CreateTransactionService {
     const transactionId: string =
       await this.transactionRepository.create(transaction);
 
-    void this.mailService.notifyTransaction(
-      jobs[3].email,
-      amount,
-      `${transaction.fromProduct.toString().slice(5)}****`,
-      `${transaction.toProduct.toString().slice(5)}****`,
-      new Date(),
-    );
+    // void this.mailService.notifyTransaction(
+    //   jobs[3].email,
+    //   amount,
+    //   `${transaction.fromProduct.toString().slice(5)}****`,
+    //   `${transaction.toProduct.toString().slice(5)}****`,
+    //   new Date(),
+    // );
     return {
       transactionId,
     };

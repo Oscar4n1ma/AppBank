@@ -25,17 +25,21 @@ export class CreateUserEnterpriseService {
   ) {}
 
   async use(user: CreateUserEnterprisetDto) {
-    const existUser: boolean = await this.userRepository.exist(
-      user.email,
-      user.username,
-    );
-    if (existUser) {
+    const jobs = await Promise.all([
+      this.userRepository.exist(user.email, user.username),
+      hash(user.password, await genSalt()),
+      hash(user.cardPin, await genSalt()),
+    ]);
+    if (jobs[0]) {
       throw new BadRequestException('El username o el correo ya existe');
     }
-    const hashedPassword: string = await hash(user.password, await genSalt());
-    const hashedPin: string = await hash(user.cardPin, await genSalt());
+
+    const hashedPassword: string = jobs[1];
+    const hashedPin: string = jobs[2];
     const createdAt: Date = new Date();
+    const userId: ObjectId = new ObjectId();
     const userEnterprise = {
+      _id: userId,
       username: user.username,
       email: user.email,
       password: hashedPassword,
@@ -57,7 +61,6 @@ export class CreateUserEnterpriseService {
       updatedAt: createdAt,
       deletedAt: null,
     };
-    const userId: string = await this.userRepository.create(userEnterprise);
 
     // se crea su cuenta
     const accountId: string = Math.round(Math.random() * 1e11).toString();
@@ -101,16 +104,17 @@ export class CreateUserEnterpriseService {
     };
     const otp: number = this.otpServices.generateOtp();
     await Promise.all([
+      this.userRepository.create(userEnterprise),
       this.accountRepository.create(productAccount),
       this.cardRepository.create(productCard),
       this.otpRepository.create(user.email, otp),
     ]);
     //envia correos
-    void this.mailService.sendRegistrationNotification(
-      user.email,
-      user.username,
-    );
-    void this.mailService.sendOtpEmail(user.email, String(otp));
+    // void this.mailService.sendRegistrationNotification(
+    //   user.email,
+    //   user.username,
+    // );
+    // void this.mailService.sendOtpEmail(user.email, String(otp));
     return userId;
   }
 }

@@ -4,7 +4,11 @@ import { MongoClient } from 'mongodb';
 @Injectable()
 export default class MongoClientDb extends MongoClient {
   constructor() {
-    super(process.env.URI_MONGO_DB, { maxPoolSize: 200, minPoolSize: 80 });
+    super(process.env.URI_MONGO_DB, {
+      maxPoolSize: 200,
+      minPoolSize: 80,
+      retryWrites: true,
+    });
     // this.on('connectionCreated', (x) => {
     //   console.log('Conexion creada', x.connectionId);
     // });
