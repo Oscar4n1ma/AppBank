@@ -3,8 +3,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import UserRepository from '../interfaces/User.repository';
 import { Collection, ObjectId } from 'mongodb';
 import MongoClientDb from 'src/config/MongoClientDb';
-import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
-import MongoCardRepository from 'src/product/repositories/MongoCardRepository';
 
 @Injectable()
 export default class MongoUserRepository implements UserRepository {

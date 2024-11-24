@@ -6,33 +6,23 @@ import MongoClientDb from 'src/config/MongoClientDb';
 export default class MongoTransactionRepository {
   private readonly accountCollection: Collection;
   private readonly transactionCollection: Collection;
+  private readonly movementsCollection: Collection;
 
   constructor(private readonly mongoClientDb: MongoClientDb) {
     this.accountCollection = this.mongoClientDb.db().collection('Account');
+    this.movementsCollection = this.mongoClientDb.db().collection('Movements');
     this.transactionCollection = this.mongoClientDb
       .db()
       .collection('Transaction');
   }
 
-  async get(id: string) {
-    const respDb = await this.transactionCollection
+  async getMovements(id: string) {
+    const respDb = await this.movementsCollection
       .find(
-        {
-          $and: [
-            {
-              $or: [{ toProduct: id }, { fromProduct: id }],
-            },
-            { deletedAt: null },
-          ],
-        },
+        { productId: id, deletedAt: null },
         {
           projection: {
-            id: '$_id',
-            amount: 1,
-            toProduct: 1,
-            description: 1,
-            fromProduct: 1,
-            createdAt: 1,
+            _id: 0,
           },
           sort: {
             createdAt: -1,
@@ -50,7 +40,6 @@ export default class MongoTransactionRepository {
       .find(
         {
           fromProduct: accountId,
-          $nor: [{ toProduct: process.env.ACCOUNT_ID_APP_BANK }],
           deletedAt: null,
           createdAt: { $gt: new Date(millisecondsDate) },
         },
@@ -60,64 +49,101 @@ export default class MongoTransactionRepository {
     return respDb.map((t) => t.amount).reduce((x, y) => x + y, 0);
   }
 
-  async create(
-    transactions: Array<{
-      amount: number;
-      toProduct: string;
-      fromProduct: string;
-      description: string;
-    }>,
-  ): Promise<string> {
+  async create(transaction: any): Promise<string> {
     const session = this.mongoClientDb.startSession();
     try {
+      const {
+        fromProduct,
+        toProduct,
+        totalAmount,
+        amount,
+        createdAt,
+        _4x1000,
+        managementCosts,
+        transferCost,
+      } = transaction;
       session.startTransaction({ retryWrites: true });
-      const createdAt: Date = new Date();
-      const transactionsId: string[] = [];
-      const mainTransaction = transactions[0];
 
-      const totaAmountTransaction = transactions
-        .map((t) => t.amount)
-        .reduce((x, y) => x + y, 0);
-
-      await this.accountCollection.updateOne(
-        {
-          id: mainTransaction.fromProduct,
-        },
-        { $inc: { balance: -totaAmountTransaction } },
-        {
-          session,
-        },
+      await this.accountCollection.bulkWrite(
+        [
+          {
+            updateOne: {
+              filter: { id: toProduct },
+              update: {
+                $inc: {
+                  balance: amount,
+                },
+              },
+            },
+          },
+          {
+            updateOne: {
+              filter: { id: fromProduct },
+              update: {
+                $inc: {
+                  balance: -totalAmount,
+                },
+              },
+            },
+          },
+        ],
+        { session },
       );
 
-      for (let i = 0; i < transactions.length; i++) {
-        const t = transactions[i];
-        if (t.toProduct !== process.env.ACCOUNT_ID_APP_BANK) {
-          await this.accountCollection.updateOne(
-            {
-              id: t.toProduct,
-            },
-            {
-              $inc: { balance: t.amount },
-            },
-            {
-              session,
-            },
-          );
-        }
-        const respDb = await this.transactionCollection.insertOne(
-          {
-            ...t,
-            createdAt,
-            updatedAt: createdAt,
-            deletedAt: null,
-          },
-          { session },
-        );
-        transactionsId.push(respDb.insertedId.toString());
+      const respDb = await this.transactionCollection.insertOne(transaction, {
+        session,
+      });
+
+      const movements = [
+        {
+          title: `Recibiste desde **${fromProduct.toString().slice(7)}.`,
+          productId: toProduct,
+          amount: amount,
+          transactionId: respDb.insertedId,
+          createdAt,
+        },
+        {
+          title: `Trasferencia bancaria a **${toProduct.toString().slice(7)}.`,
+          productId: fromProduct,
+          amount: -amount,
+          transactionId: respDb.insertedId,
+          createdAt,
+        },
+      ];
+
+      if (_4x1000 > 0) {
+        movements.push({
+          title: `Pago impuesto 4x1000.`,
+          productId: fromProduct,
+          amount: -_4x1000,
+          transactionId: respDb.insertedId,
+          createdAt,
+        });
       }
+      if (managementCosts > 0) {
+        movements.push({
+          title: `Pago costo de gestion.`,
+          productId: fromProduct,
+          amount: -managementCosts,
+          transactionId: respDb.insertedId,
+          createdAt,
+        });
+      }
+      if (transferCost > 0) {
+        movements.push({
+          title: `Pago costo de transferencia.`,
+          productId: fromProduct,
+          amount: -transferCost,
+          transactionId: respDb.insertedId,
+          createdAt,
+        });
+      }
+      await this.movementsCollection.insertMany(movements);
+
       await session.commitTransaction();
-      return transactionsId[0];
+      return respDb.insertedId.toString();
     } catch (error) {
+      console.log(error);
       if (session.inTransaction()) {
         await session.abortTransaction();
       }

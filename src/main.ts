@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 config({ path: '.env.development.local' });
 
 async function bootstrap() {
@@ -9,7 +9,16 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory(errors) {
+        throw new BadRequestException({
+          error: true,
+          msg: errors.map((e) => Object.values(e.constraints)).flat(1),
+        });
+      },
+    }),
+  );
   await app.listen(8000);
 }
 bootstrap();

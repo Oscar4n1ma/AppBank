@@ -8,7 +8,7 @@ export class GetTransactionService {
   ) {}
 
   async use(accountId: string) {
-    const transactions = this.transactionRepository.get(accountId);
+    const transactions = this.transactionRepository.getMovements(accountId);
     return transactions;
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Ip, Post } from '@nestjs/common';
 import { CreateTransactionDto } from '../dtos/create-transaction';
 import { ErrorHandler } from 'src/utils/error-handler';
 import { CreateTransactionService } from '../services/create-transaction.service';
@@ -10,9 +10,9 @@ export class CreateTransactionController {
   ) {}
 
   @Post()
-  async use(@Body() transaction: CreateTransactionDto) {
+  async use(@Body() transaction: CreateTransactionDto, @Ip() ip: string) {
     try {
-      const res = await this.createTransactionService.use(transaction);
+      const res = await this.createTransactionService.use(ip, transaction);
       return {
         error: false,
         msg: null,

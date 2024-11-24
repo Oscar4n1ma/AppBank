@@ -2,7 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 
 import { ErrorHandler } from 'src/utils/error-handler';
 import { GetTransactionService } from '../services/get-transactions.service';
-@Controller('transaction/history/:id')
+@Controller('transaction/movements/:id')
 export class GetTransactionController {
   constructor(
     private readonly errorHandler: ErrorHandler,

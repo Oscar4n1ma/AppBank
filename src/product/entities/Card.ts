@@ -8,7 +8,6 @@ export class Card<T, K> implements Product<T, K> {
   name: string;
   description: string;
   cardType: string;
-  pin: string;
   cvc: number;
   currentDebt: number;
   amountCreditLimit: number;
