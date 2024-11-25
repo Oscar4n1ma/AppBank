@@ -31,7 +31,7 @@ export class CreateUserEnterpriseService {
       hash(user.cardPin, await genSalt()),
     ]);
     if (jobs[0]) {
-      throw new BadRequestException('El username o el correo ya existe');
+      throw new BadRequestException('El username o el correo ya existe.');
     }
 
     const hashedPassword: string = jobs[1];

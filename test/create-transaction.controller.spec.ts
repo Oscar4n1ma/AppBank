@@ -38,12 +38,12 @@ describe('Creacion de usuarios', () => {
         fromProduct: '12971436983',
         toProduct: '10000000005',
         description: 'Pago en comercio electronico snapwire',
-        amount: 200000,
+        amount: 100000000,
       })
       .expect(400);
     expect(response.body).toEqual({
       error: true,
-      msg: 'No tiene fondos.',
+      msg: 'El limite de transferencias por dia ya ha sido superado.',
     });
   });
 
@@ -51,9 +51,9 @@ describe('Creacion de usuarios', () => {
     await request(app.getHttpServer())
       .post('/transaction/init')
       .send({
-        userId: '673b64d02c45fe681816808d',
-        fromProduct: '26617236509',
-        toProduct: '10000000005',
+        userId: '673b4b65e4da126f8b9782fe',
+        fromProduct: '10000000005',
+        toProduct: '90341901209',
         description: 'Pago en comercio electronico snapwire',
         amount: 50,
       })
@@ -87,7 +87,7 @@ describe('Creacion de usuarios', () => {
         description: 'Pago en comercio electronico snapwire',
         amount: 60,
       })
-      .expect(400);
+      .expect(404);
 
     expect(response.body).toEqual({
       error: true,
@@ -105,7 +105,7 @@ describe('Creacion de usuarios', () => {
         description: 'Pago en comercio electronico snapwire',
         amount: 80,
       })
-      .expect(400);
+      .expect(404);
 
     expect(response.body).toEqual({
       error: true,

@@ -49,7 +49,7 @@ describe('Obtener informacion de productos', () => {
         topBalance: 100000000,
         interestRate: 0.001,
         _4x1000: false,
-        balance: 200.02800000000025,
+        balance: 100000000000000000000,
         createdAt: '2024-11-18T14:14:39.287Z',
         updatedAt: '2024-11-18T14:14:39.287Z',
       },

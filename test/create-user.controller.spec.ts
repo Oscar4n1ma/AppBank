@@ -83,7 +83,7 @@ describe('Creacion de usuarios', () => {
       .expect(400);
     expect(response.body).toEqual({
       error: true,
-      msg: 'El username o el correo ya existe',
+      msg: 'El username o el correo ya existe.',
     });
   });
 
@@ -91,6 +91,7 @@ describe('Creacion de usuarios', () => {
     const username = Math.round(Math.random() * 1e10).toString();
     const email = Math.round(Math.random() * 1e5).toString();
     const cc = Math.round(Math.random() * 1e10).toString();
+    const phoneNumber = Math.floor(Math.random() * 1e10);
     await request(app.getHttpServer())
       .post('/user/employee')
       .send({
@@ -100,7 +101,7 @@ describe('Creacion de usuarios', () => {
         email,
         cc,
         address: 'carrera 18#23a20',
-        phoneNumber: '321321312412',
+        phoneNumber,
         password: '12345',
         genre: 'male',
         roleId: 2,
@@ -113,6 +114,7 @@ describe('Creacion de usuarios', () => {
     const username = Math.round(Math.random() * 1e10).toString();
     const email = Math.round(Math.random() * 1e5).toString();
     const nit = Math.round(Math.random() * 1e10).toString();
+    const phoneNumber = Math.floor(Math.random() * 1e10);
     await request(app.getHttpServer())
       .post('/user/enterprise')
       .send({
@@ -123,7 +125,7 @@ describe('Creacion de usuarios', () => {
         description: 'empresa de putas',
         name: 'la quemona',
         address: 'carrera 18#23a20',
-        phoneNumber: '321321312412',
+        phoneNumber,
         password: '12345',
         cardPin: '4424',
       })

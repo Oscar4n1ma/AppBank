@@ -10,7 +10,7 @@ import { JsonWebTokenError } from 'jsonwebtoken';
 export class ErrorHandler {
   constructor() {}
   use(error: Error) {
-    //console.log(error); //!solo para debuguear, ELIMINAR EN PRODUCCION
+    console.log(error); //!solo para debuguear, ELIMINAR EN PRODUCCION
     if (error instanceof HttpException) {
       const messages = (error.getResponse() as Record<string, unknown>).message;
       const msg: string[] | string =

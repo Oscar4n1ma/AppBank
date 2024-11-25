@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
 import { CreateTransactionDto } from '../dtos/create-transaction';
@@ -28,7 +32,7 @@ export class CreateTransactionService {
     ]);
     // verificaciones de las cuentas
     if (!jobs[0]) {
-      throw new BadRequestException('La cuenta de origin no existe.');
+      throw new NotFoundException('La cuenta de origin no existe.');
     }
     if (jobs[0].owner.toString() !== userId) {
       throw new BadRequestException('Esta cuenta no le pertence al usuario.');
@@ -43,7 +47,7 @@ export class CreateTransactionService {
       );
     }
     if (!jobs[1]) {
-      throw new BadRequestException('La cuenta destino no existe.');
+      throw new NotFoundException('La cuenta destino no existe.');
     }
     if (!jobs[1].state) {
       throw new BadRequestException(
