@@ -45,6 +45,19 @@ export default class MongoAuthRepository implements AuthRepository {
     }
     return respDb;
   }
+  async setSession(user: string, session: any) {
+    await this.userCollection.updateOne(
+      { _id: new ObjectId(user) },
+      {
+        $push: {
+          sessions: {
+            ...session,
+            createdAt: new Date(),
+          },
+        } as any,
+      },
+    );
+  }
 
   async findByField(
     query: Record<string, any>,

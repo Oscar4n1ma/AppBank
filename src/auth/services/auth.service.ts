@@ -17,7 +17,7 @@ export class AuthService {
     private readonly otpService: OtpService,
   ) {}
 
-  async use(user: LoginUserDto) {
+  async use(user: LoginUserDto, requestData: Record<string, unknown>) {
     const credentialsToLogin: AuthUser = new AuthUser(user.user, user.password);
 
     const credentialsFound =
@@ -45,6 +45,10 @@ export class AuthService {
       const jwtSecret = process.env.SECRET_KEY_JWT;
       accessToken = sign({ userId: _id }, jwtSecret);
     }
+    await this.authRepository.setSession(
+      credentialsFound._id.toString(),
+      requestData,
+    );
     return { userId: _id, accessToken, _2fa, roles };
   }
 }
