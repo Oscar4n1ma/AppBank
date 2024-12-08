@@ -9,10 +9,12 @@ import MongoTransactionRepository from './repositories/MongoTransactionRepositor
 import { UsersModule } from 'src/user/user.module';
 import { UtilsModule } from 'src/utils/utils.module';
 import { MailModule } from 'src/mail/mail.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     MongoClientModule,
+    AuthModule,
     ProductModule,
     UsersModule,
     UtilsModule,

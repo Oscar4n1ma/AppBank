@@ -13,23 +13,26 @@ export default class MongoAuthRepository implements AuthRepository {
   }
 
   async findCredentials(crendentials: AuthUser) {
-    const respDb = await this.userCollection.findOne(
-      { username: crendentials.username, deletedAt: null },
-      {
-        projection: {
-          username: 1,
-          password: 1,
-          _id: 1,
-          email: 1,
-          roles: 1,
-          _2fa: 1,
-        },
-      },
-    );
-    if (!respDb) {
-      return null;
+    const query = {};
+    if (ObjectId.isValid(crendentials.username)) {
+      query['_id'] = new ObjectId(crendentials.username);
+    } else {
+      query['username'] = crendentials.username;
     }
-    return respDb;
+    const respDb = await this.userCollection.findOne(query, {
+      projection: {
+        username: 1,
+        password: 1,
+        state: 1,
+        usedPasswords: 1,
+        _id: 1,
+        pin: 1,
+        email: 1,
+        roles: 1,
+        _2fa: 1,
+      },
+    });
+    return respDb ?? null;
   }
 
   async findIdByEmail(email: string) {

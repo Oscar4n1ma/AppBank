@@ -13,6 +13,9 @@ export class CreateTransactionDto {
   @IsString()
   description: string;
 
+  @IsString()
+  pin: string;
+
   @IsNumber()
   amount: number;
 }

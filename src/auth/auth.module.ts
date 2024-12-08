@@ -20,6 +20,7 @@ import { UtilsModule } from 'src/utils/utils.module';
 import { OtpModule } from 'src/otp-service/otp.module';
 
 @Module({
+  exports: [MongoAuthRepository],
   imports: [MongoClientModule, UtilsModule, OtpModule],
   controllers: [
     AuthController,

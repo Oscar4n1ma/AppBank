@@ -34,7 +34,7 @@ export class AuthService {
     if (!validation) {
       throw new UnauthorizedException('Credenciales incorrectas.');
     }
-    const { email, _id, _2fa } = credentialsFound;
+    const { email, _id, _2fa, roles } = credentialsFound;
     let accessToken: string = null;
 
     if (_2fa) {
@@ -45,6 +45,6 @@ export class AuthService {
       const jwtSecret = process.env.SECRET_KEY_JWT;
       accessToken = sign({ userId: _id }, jwtSecret);
     }
-    return { userId: _id, accessToken, _2fa };
+    return { userId: _id, accessToken, _2fa, roles };
   }
 }

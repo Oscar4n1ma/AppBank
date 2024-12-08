@@ -35,6 +35,7 @@ export default class MongoUserRepository implements UserRepository {
         projection: {
           password: 0,
           _id: 0,
+          pin: 0,
           usedPasswords: 0,
           deletedAt: 0,
           permissions: 0,

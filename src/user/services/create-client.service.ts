@@ -113,12 +113,12 @@ export class CreateUserClientService {
       this.cardRepository.create(productCard),
       this.otpRepository.create(user.email, otp),
     ]);
-    //envia correos
-    // void this.mailService.sendRegistrationNotification(
-    //   user.email,
-    //   user.username,
-    // );
-    // void this.mailService.sendOtpEmail(user.email, String(otp));
+
+    void this.mailService.sendRegistrationNotification(
+      user.email,
+      user.username,
+    );
+    void this.mailService.sendOtpEmail(user.email, String(otp));
 
     return userId;
   }

@@ -2,48 +2,62 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
 import { CreateTransactionDto } from '../dtos/create-transaction';
 import MongoTransactionRepository from '../repositories/MongoTransactionRepository';
-import MongoUserRepository from 'src/user/repositories/MongoUserRepository';
+
 import { UserStatus } from 'src/enums/user-status.enum';
 import { MailService } from 'src/mail/mail.service';
+import { compare } from 'bcrypt';
+import MongoAuthRepository from 'src/auth/MongoAuthRepository';
 
 @Injectable()
 export class CreateTransactionService {
   constructor(
     private readonly accountRepository: MongoAccountRepository,
-    protected readonly userRepository: MongoUserRepository,
+    protected readonly authRepository: MongoAuthRepository,
     private readonly transactionRepository: MongoTransactionRepository,
     private readonly mailService: MailService,
   ) {}
 
   async use(ip: string, transactionData: CreateTransactionDto) {
-    const { toProduct, fromProduct, amount, description, userId } =
+    const { toProduct, fromProduct, amount, description, userId, pin } =
       transactionData;
 
     const jobs = await Promise.all([
       this.accountRepository.get(fromProduct),
       this.accountRepository.get(toProduct),
       this.transactionRepository.amountTransferedPerDay(fromProduct),
-      this.userRepository.get(userId),
+      this.authRepository.findCredentials({ username: userId, password: '' }),
     ]);
+
     // verificaciones de las cuentas
     if (!jobs[0]) {
       throw new NotFoundException('La cuenta de origin no existe.');
     }
-    if (jobs[0].owner.toString() !== userId) {
-      throw new BadRequestException('Esta cuenta no le pertence al usuario.');
-    }
+    const userOwner = jobs[3];
 
-    if (jobs[3].state !== UserStatus.ACTIVE) {
+    if (!userOwner) {
+      throw new BadRequestException(
+        'El usuario especificado como propietario no existe.',
+      );
+    }
+    if (userOwner.state !== UserStatus.ACTIVE) {
       throw new BadRequestException('El usuario no se encuentra activo');
     }
+
+    if (userId !== jobs[0].owner.toString()) {
+      throw new BadRequestException(
+        'El usuario especificado no le pertenece el producto.',
+      );
+    }
+
     if (!jobs[0].state) {
       throw new BadRequestException(
-        'La cuenta de origin se encuentra desactivada.',
+        'La cuenta de origen se encuentra desactivada.',
       );
     }
     if (!jobs[1]) {
@@ -93,16 +107,21 @@ export class CreateTransactionService {
       );
     }
 
+    const validationPind = await compare(pin, userOwner.pin);
+    if (!validationPind) {
+      throw new UnauthorizedException('El pin es incorrecto.');
+    }
+
     const transactionId: string =
       await this.transactionRepository.create(transaction);
 
-    // void this.mailService.notifyTransaction(
-    //   jobs[3].email,
-    //   amount,
-    //   `${transaction.fromProduct.toString().slice(5)}****`,
-    //   `${transaction.toProduct.toString().slice(5)}****`,
-    //   new Date(),
-    // );
+    void this.mailService.notifyTransaction(
+      jobs[3].email,
+      amount,
+      `${transaction.fromProduct.toString().slice(5)}****`,
+      `${transaction.toProduct.toString().slice(5)}****`,
+      new Date(),
+    );
     return {
       transactionId,
     };
