@@ -4,8 +4,8 @@ import { MongoClientModule } from 'src/config/mongo-client.module';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import MongoTransactionRepository from 'src/transaction/repositories/MongoTransactionRepository';
-import { GetTransactionService } from 'src/transaction/services/get-transactions.service';
-import { GetTransactionController } from 'src/transaction/controllers/get-transactions.controller';
+import { GetTransactionService } from 'src/transaction/services/get-movements.service';
+import { GetTransactionController } from 'src/transaction/controllers/get-movements.controller';
 
 describe('Obtener el historial de transacciones', () => {
   let app: INestApplication;

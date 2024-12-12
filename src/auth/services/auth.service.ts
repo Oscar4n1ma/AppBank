@@ -7,6 +7,7 @@ import { OtpService } from 'src/otp-service/services/otp.service';
 import MongoOtpsRepository from 'src/otp-service/repositories/MongoOtpsRepository';
 import { sign } from 'jsonwebtoken';
 import { MailService } from 'src/mail/mail.service';
+import { UserState } from 'src/enums/user-status.enum';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,11 @@ export class AuthService {
     if (!validation) {
       throw new UnauthorizedException('Credenciales incorrectas.');
     }
+
+    if (credentialsFound.state !== UserState.ACTIVE) {
+      throw new UnauthorizedException('El usuario no se ecuentra activado');
+    }
+
     const { email, _id, _2fa, roles } = credentialsFound;
     let accessToken: string = null;
 
@@ -49,6 +55,6 @@ export class AuthService {
       credentialsFound._id.toString(),
       requestData,
     );
-    return { userId: _id, accessToken, _2fa, roles };
+    return { userId: _id, accessToken, _2fa, roles, email };
   }
 }

@@ -1,24 +1,39 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import * as session from 'express-session';
+import helmet from 'helmet';
+import {
+  CONFIG_CORS,
+  CONFIG_HELMET,
+  CONFIG_SESSION,
+  CONFIG_VALIDATION_PIPE,
+  CONFIG_VERSIONING,
+} from './config/configs';
 config({ path: '.env.development.local' });
+
+declare module 'express-session' {
+  interface SessionData {
+    user: {
+      email: string;
+      userId: string;
+      accessToken: string;
+      roles: Array<{ id: number }>;
+      userAgent: string;
+    };
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin: true,
-  });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      exceptionFactory(errors) {
-        throw new BadRequestException({
-          error: true,
-          msg: errors.map((e) => Object.values(e.constraints)).flat(1),
-        });
-      },
-    }),
-  );
+  app.enableCors(CONFIG_CORS);
+  app.useGlobalPipes(new ValidationPipe(CONFIG_VALIDATION_PIPE));
+  app.setGlobalPrefix('api');
+  app.enableVersioning(CONFIG_VERSIONING);
+  app.use(session(CONFIG_SESSION));
+  app.use(helmet(CONFIG_HELMET));
+  app.use(session({ secret: 'ljasklfhaklfhkashfkj' }));
   await app.listen(8000);
 }
 bootstrap();

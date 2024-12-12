@@ -3,17 +3,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import UserRepository from '../interfaces/User.repository';
 import { Collection, ObjectId } from 'mongodb';
 import MongoClientDb from 'src/config/MongoClientDb';
+import { Client } from '../entities/Client.enity';
+import { Company } from '../entities/Enterprise';
+import { Card } from 'src/product/entities/Card';
+import { Account } from 'src/product/entities/Account';
 
 @Injectable()
 export default class MongoUserRepository implements UserRepository {
   private readonly userCollection: Collection;
   private readonly cardCollection: Collection;
   private readonly accountCollection: Collection;
+  private readonly companyCollection: Collection;
 
   constructor(private readonly mongoClientDb: MongoClientDb) {
     this.userCollection = this.mongoClientDb.db().collection('User');
-    this.cardCollection = this.mongoClientDb.db().collection('Account');
-    this.accountCollection = this.mongoClientDb.db().collection('Card');
+    this.cardCollection = this.mongoClientDb.db().collection('Card');
+    this.accountCollection = this.mongoClientDb.db().collection('Account');
+    this.companyCollection = this.mongoClientDb.db().collection('Company');
   }
   async exist(email: string, username: string): Promise<boolean> {
     const respDb = await this.userCollection.findOne(
@@ -36,7 +42,7 @@ export default class MongoUserRepository implements UserRepository {
           password: 0,
           _id: 0,
           pin: 0,
-          usedPasswords: 0,
+          oldPasswords: 0,
           deletedAt: 0,
           permissions: 0,
           roles: 0,
@@ -46,9 +52,51 @@ export default class MongoUserRepository implements UserRepository {
     return respDb;
   }
 
-  async create(user: unknown): Promise<string> {
-    const respDb = await this.userCollection.insertOne(user);
-    return respDb.insertedId.toString();
+  async getEnterpriseData(id: string) {
+    const respDb = await this.companyCollection.findOne({
+      owner: new ObjectId(id),
+      deletedAt: null,
+    });
+    return respDb;
+  }
+
+  async create(
+    user: Client,
+    card: Card,
+    account: Account,
+    company: Company | null,
+  ): Promise<string> {
+    const session = this.mongoClientDb.startSession();
+    try {
+      session.startTransaction();
+      const respDb = await this.userCollection.insertOne(
+        { _id: new ObjectId(user.id), ...user },
+        { session },
+      );
+      await this.cardCollection.insertOne(
+        { ...card, ['owner']: respDb.insertedId },
+        { session },
+      );
+      await this.accountCollection.insertOne(
+        { ...account, ['owner']: respDb.insertedId },
+        { session },
+      );
+      if (company) {
+        await this.companyCollection.insertOne({
+          ...company,
+          ['owner']: respDb.insertedId,
+        });
+      }
+      await session.commitTransaction();
+      return respDb.insertedId.toString();
+    } catch (error) {
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
+      throw error;
+    } finally {
+      await session.endSession();
+    }
   }
 
   async delete(id: string) {

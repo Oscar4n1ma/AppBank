@@ -1,21 +1,30 @@
-import { UserStatus } from 'src/enums/user-status.enum';
+import { UserState } from 'src/enums/user-status.enum';
 import User from '../interfaces/User.interface';
 
 export class Client implements User {
   id: string;
   username: string;
   password: string;
+  _2fa: boolean;
   oldPasswords: string[];
   email: string;
-  address: string;
-  phoneNumber: string;
+  pin: string;
   permissions: number[];
-  roles: string[];
-  status: UserStatus;
-  monthlyIncome: string;
-  currentJob: string;
-  maritalStatus: string;
-  dateBorn: string;
+  roles: number[];
+  state: UserState;
+  data: {
+    firstName: string;
+    lastName: string;
+    documnentNumber: string;
+    documnentTypeId: number;
+    phoneNumber: string;
+    address: string;
+    monthlyIncome: string;
+    genre: number;
+    currentJob: number;
+    maritalStatus: number;
+    dateBorn: string;
+  };
   updatedAt: Date;
   deletedAt: Date | null;
   createdAt: Date;

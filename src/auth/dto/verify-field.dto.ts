@@ -7,7 +7,7 @@ export class VerifyFieldDto {
 
   @IsOptional()
   @IsString()
-  cc?: string;
+  documentNumber?: string;
 
   @IsOptional()
   @IsString()

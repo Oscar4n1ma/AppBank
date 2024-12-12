@@ -30,7 +30,7 @@ export default class MongoCardRepository {
     return respDb;
   }
 
-  async create(card: Card<string, ObjectId>): Promise<string> {
+  async create(card: Card): Promise<string> {
     const respDb = await this.cardCollection.insertOne(card);
     return respDb.insertedId.toString();
   }

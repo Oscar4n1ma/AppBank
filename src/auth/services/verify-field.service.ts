@@ -12,10 +12,10 @@ export class VerifyFieldService {
 
   async verifyField(verifyFieldDto: VerifyFieldDto) {
     // Validar que solo uno de los campos esté presente
-    const { email, cc, phoneNumber, username } = verifyFieldDto;
+    const { email, documentNumber, phoneNumber, username } = verifyFieldDto;
     if (
       (email ? 1 : 0) +
-        (cc ? 1 : 0) +
+        (documentNumber ? 1 : 0) +
         (phoneNumber ? 1 : 0) +
         (username ? 1 : 0) !==
       1
@@ -30,8 +30,8 @@ export class VerifyFieldService {
     if (username) {
       fieldToVerify.username = username;
     }
-    if (cc) {
-      fieldToVerify['data.cc'] = cc;
+    if (documentNumber) {
+      fieldToVerify['data.documentNumber'] = documentNumber;
     }
     if (phoneNumber) {
       fieldToVerify['data.phoneNumber'] = phoneNumber;

@@ -14,6 +14,7 @@ export class GetUserInfoService {
   async use(id: string) {
     const promises = await Promise.all([
       this.userRepository.get(id),
+      this.userRepository.getEnterpriseData(id),
       this.accountRepository.get(id),
       this.cardRepository.get(id),
     ]);
@@ -22,9 +23,10 @@ export class GetUserInfoService {
     }
     return {
       user: promises[0],
+      enterprise: promises[1],
       products: {
-        account: promises[1],
-        card: promises[2],
+        accounts: [promises[2]],
+        cards: [promises[3]],
       },
     };
   }

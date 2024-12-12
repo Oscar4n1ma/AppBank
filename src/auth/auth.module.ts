@@ -18,6 +18,7 @@ import { ConfirmAccountService } from './services/confirm-account.service';
 import { MongoClientModule } from 'src/config/mongo-client.module';
 import { UtilsModule } from 'src/utils/utils.module';
 import { OtpModule } from 'src/otp-service/otp.module';
+import { LogoutController } from './controllers/logout.controller';
 
 @Module({
   exports: [MongoAuthRepository],
@@ -29,6 +30,7 @@ import { OtpModule } from 'src/otp-service/otp.module';
     RecoveryPasswordController,
     ChangePasswordController,
     ConfirmAccountController,
+    LogoutController,
   ],
   providers: [
     AuthService,

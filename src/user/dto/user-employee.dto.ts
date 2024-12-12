@@ -9,6 +9,7 @@ export class CreateUserEmployeeDto {
   @IsString()
   @IsNotEmpty()
   readonly username: string;
+
   @IsString()
   @IsNotEmpty()
   readonly email: string;
@@ -29,7 +30,7 @@ export class CreateUserEmployeeDto {
   readonly address: string;
   @IsNumberString()
   @IsNotEmpty()
-  readonly cc: string;
+  readonly documentNumber: string;
   @IsString()
   @IsNotEmpty()
   readonly genre: string;

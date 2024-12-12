@@ -1,18 +1,19 @@
 import { Controller, Get, Param } from '@nestjs/common';
 
 import { ErrorHandler } from 'src/utils/error-handler';
-import { GetTransactionService } from '../services/get-transactions.service';
-@Controller('transaction/movements/:id')
-export class GetTransactionController {
+import { GetReceiptService } from '../services/get-receipt.service';
+
+@Controller('transaction/receipt/:id')
+export class GetReceiptController {
   constructor(
     private readonly errorHandler: ErrorHandler,
-    private readonly getTransactionService: GetTransactionService,
+    private readonly getReceiptService: GetReceiptService,
   ) {}
 
   @Get()
   async use(@Param('id') id: string) {
     try {
-      const res = await this.getTransactionService.use(id);
+      const res = await this.getReceiptService.use(id);
       return {
         error: false,
         msg: null,

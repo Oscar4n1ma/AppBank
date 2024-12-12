@@ -13,6 +13,6 @@ export class Verify2FaService {
     });
     const payload = { id: verify2Fa.email };
     const jwtSecret = process.env.SECRET_KEY_JWT;
-    return { access_token: sign(payload, jwtSecret) };
+    return { accessToken: sign(payload, jwtSecret) };
   }
 }

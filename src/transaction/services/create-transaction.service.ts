@@ -4,21 +4,22 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-
 import MongoAccountRepository from 'src/product/repositories/MongoAccountRepository';
 import { CreateTransactionDto } from '../dtos/create-transaction';
 import MongoTransactionRepository from '../repositories/MongoTransactionRepository';
-
-import { UserStatus } from 'src/enums/user-status.enum';
+import { UserState } from 'src/enums/user-status.enum';
 import { MailService } from 'src/mail/mail.service';
 import { compare } from 'bcrypt';
 import MongoAuthRepository from 'src/auth/MongoAuthRepository';
+import { generateRandomKey } from 'src/utils/generate-random-key';
+import MongoUserRepository from 'src/user/repositories/MongoUserRepository';
 
 @Injectable()
 export class CreateTransactionService {
   constructor(
     private readonly accountRepository: MongoAccountRepository,
-    protected readonly authRepository: MongoAuthRepository,
+    private readonly authRepository: MongoAuthRepository,
+    private readonly userRepository: MongoUserRepository,
     private readonly transactionRepository: MongoTransactionRepository,
     private readonly mailService: MailService,
   ) {}
@@ -45,7 +46,7 @@ export class CreateTransactionService {
         'El usuario especificado como propietario no existe.',
       );
     }
-    if (userOwner.state !== UserStatus.ACTIVE) {
+    if (userOwner.state !== UserState.ACTIVE) {
       throw new BadRequestException('El usuario no se encuentra activo');
     }
 
@@ -69,6 +70,8 @@ export class CreateTransactionService {
       );
     }
 
+    const userOwnerRecipient = await this.userRepository.get(jobs[1].owner);
+
     //verificacione para realizar la transaccion
     if (jobs[2] + amount > jobs[0].amountTransfersLimit) {
       throw new BadRequestException(
@@ -76,30 +79,28 @@ export class CreateTransactionService {
       );
     }
     const _4x1000: number = jobs[0]._4x1000 ? amount * 0.004 : 0;
-    const managementCosts: number = jobs[0].managementCosts;
+
     const transferCost: number = jobs[0].transferCost;
     const createdAt: Date = new Date();
-
+    const referenceNumber = generateRandomKey(10);
+    const { name, firstName, lastName } = userOwnerRecipient.data;
     const transaction = {
       toProduct,
       fromProduct,
       amount,
-      totalAmount: amount + _4x1000 + managementCosts + transferCost,
+      totalAmount: amount + _4x1000 + transferCost,
       title: `Pago en ${jobs[1].description} ${toProduct.toString().slice(5)}****`,
       description,
       _4x1000,
-      managementCosts,
       transferCost,
-      reference1: ip,
-      reference2: '',
+      reference1: referenceNumber,
+      reference2: ip,
+      reference3: firstName ? `${firstName} ${lastName}` : name,
       createdAt,
     };
 
     const totalAmountTransaction =
-      transaction.amount +
-      transaction._4x1000 +
-      transaction.managementCosts +
-      transaction.transferCost;
+      transaction.amount + transaction._4x1000 + transaction.transferCost;
 
     if (jobs[0].balance < totalAmountTransaction) {
       throw new BadRequestException(

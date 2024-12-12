@@ -10,7 +10,7 @@ import MongoOtpsRepository from 'src/otp-service/repositories/MongoOtpsRepositor
 import { OtpService } from 'src/otp-service/services/otp.service';
 import { MailService } from 'src/mail/mail.service';
 import { ProductModule } from 'src/product/product.module';
-import { CreateUserEnterpriseService } from 'src/user/services/create-enterprise.service';
+import { CreateUserEnterpriseService } from 'src/user/services/create-user.service';
 import { CreateUserEmployeeService } from 'src/user/services/create-employee.service';
 import { ConfigService } from '@nestjs/config';
 

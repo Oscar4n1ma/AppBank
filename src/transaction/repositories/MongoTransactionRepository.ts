@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import MongoClientDb from 'src/config/MongoClientDb';
 
 @Injectable()
@@ -47,6 +47,13 @@ export default class MongoTransactionRepository {
       )
       .toArray();
     return respDb.map((t) => t.amount).reduce((x, y) => x + y, 0);
+  }
+
+  async getTransaction(id: string) {
+    const respDb = await this.transactionCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    return respDb;
   }
 
   async create(transaction: any): Promise<string> {

@@ -1,4 +1,4 @@
-import { UserStatus } from 'src/enums/user-status.enum';
+import { UserState } from 'src/enums/user-status.enum';
 
 export default interface User {
   id: string;
@@ -6,11 +6,9 @@ export default interface User {
   password: string;
   oldPasswords: string[];
   email: string;
-  address: string;
-  phoneNumber: string;
-  roles: string[];
+  roles: number[];
   permissions: number[];
-  status: UserStatus;
+  state: UserState;
   updatedAt: Date;
   deletedAt: Date | null;
   createdAt: Date;

@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CreateUserController } from './controllers/create-user.controller';
-import { CreateUserClientService } from './services/create-client.service';
-import { CreateUserEnterpriseService } from './services/create-enterprise.service';
+import { CreateUserService } from './services/create-user.service';
 import MongoUserRepository from './repositories/MongoUserRepository';
-import { CreateUserEmployeeService } from './services/create-employee.service';
 import { MongoClientModule } from 'src/config/mongo-client.module';
 import { GetUserInfoController } from './controllers/get-user-info.controller';
 import { GetUserInfoService } from './services/get-user-info.service';
@@ -31,10 +29,9 @@ import { UtilsModule } from 'src/utils/utils.module';
   providers: [
     DeleteUserService,
     MongoUserRepository,
-    CreateUserClientService,
-    CreateUserEmployeeService,
+    CreateUserService,
+
     GetUserInfoService,
-    CreateUserEnterpriseService,
   ],
 })
 export class UsersModule {}

@@ -1,10 +1,22 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsStrongPassword,
+  Length,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { CompanyDto } from './company.dto';
 
-export class CreateUserClientDto {
+export class ClientDto {
   @IsString()
   @IsNotEmpty()
-  @Transform((args) => args.value.trim())
+  @Transform((args) => args.value.trim().split(' ').join(''))
   readonly username: string;
 
   @IsString()
@@ -33,29 +45,50 @@ export class CreateUserClientDto {
 
   @IsNumberString()
   @IsNotEmpty()
+  @Length(4, 4)
   readonly cardPin: string;
 
   @IsNumberString()
   @IsNotEmpty()
-  readonly cc: string;
+  readonly documentNumber: string;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly genre: string;
+  @IsNumber()
+  @Min(1)
+  readonly documentTypeId: number;
+
+  @IsNumber()
+  @Min(0)
+  readonly genre: number;
 
   @IsNumberString()
   @IsNotEmpty()
   readonly monthlyIncome: string;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly maritalStatus: string;
+  @IsNumber()
+  @Min(0)
+  readonly maritalStatus: number;
+
+  @IsNumber()
+  @Min(0)
+  readonly currentJob: number;
 
   @IsString()
   @IsNotEmpty()
-  readonly currentJob: string;
+  @IsStrongPassword(
+    {
+      minLength: 8,
+      minSymbols: 1,
+      minUppercase: 1,
+    },
+    {
+      message:
+        'La contraseña debe tener almenos un simbolo o una letra mayuscula',
+    },
+  )
+  readonly password: string;
 
-  @IsString()
-  @IsNotEmpty()
-  password: string;
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  readonly company?: CompanyDto;
 }

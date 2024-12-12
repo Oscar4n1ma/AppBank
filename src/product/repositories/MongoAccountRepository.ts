@@ -36,7 +36,7 @@ export default class MongoAccountRepository {
     return respDb;
   }
 
-  async create(account: Account<string, ObjectId>): Promise<string> {
+  async create(account: Account): Promise<string> {
     const respDb = await this.accountCollection.insertOne(account);
     return respDb.insertedId.toString();
   }

@@ -1,6 +1,6 @@
-export interface Product<T, K> {
-  id: T;
-  owner: K;
+export interface Product {
+  id: string;
+  owner: string;
   state: boolean;
   name: string;
   description: string;

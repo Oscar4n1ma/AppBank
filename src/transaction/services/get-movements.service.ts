@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import MongoTransactionRepository from '../repositories/MongoTransactionRepository';
 
 @Injectable()
-export class GetTransactionService {
+export class GetMovementsService {
   constructor(
     private readonly transactionRepository: MongoTransactionRepository,
   ) {}
