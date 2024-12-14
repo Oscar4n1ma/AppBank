@@ -15,6 +15,7 @@ export class RecoveryPasswordController {
       const res = await this.recoveryPasswordService.use(email);
       return {
         error: false,
+        msg: null,
         res,
       };
     } catch (error) {

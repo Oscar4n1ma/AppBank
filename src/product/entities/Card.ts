@@ -27,6 +27,7 @@ export class Card implements Product {
     this.id = id;
     this.state = true;
     this.cvc = cvc;
+    this.cardType = 'debit';
     this.accountAssociatedId = accountAssociatedId;
     this.name = 'Card';
     this.description = 'Producto bancario de AppBank';

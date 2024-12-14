@@ -12,26 +12,43 @@ export default class MongoAuthRepository implements AuthRepository {
     this.userCollection = this.mongoClientDb.db().collection('User');
   }
 
-  async findCredentials(crendentials: AuthUser) {
-    const query = {};
-    if (ObjectId.isValid(crendentials.username)) {
-      query['_id'] = new ObjectId(crendentials.username);
+  async findCredentials({ username }: AuthUser) {
+    let query = {};
+    if (ObjectId.isValid(username)) {
+      query = { _id: new ObjectId(username), deletedAt: null };
     } else {
-      query['username'] = crendentials.username;
+      query = {
+        $and: [
+          {
+            $or: [
+              { username },
+              { email: username },
+              { 'data.documentNumber': username },
+            ],
+          },
+          { deletedAt: null },
+        ],
+      };
     }
-    const respDb = await this.userCollection.findOne(query, {
-      projection: {
-        username: 1,
-        password: 1,
-        state: 1,
-        oldPasswords: 1,
-        _id: 1,
-        pin: 1,
-        email: 1,
-        roles: 1,
-        _2fa: 1,
+    const respDb = await this.userCollection.findOne(
+      {
+        ...query,
+        deletedAt: null,
       },
-    });
+      {
+        projection: {
+          username: 1,
+          password: 1,
+          state: 1,
+          oldPasswords: 1,
+          _id: 1,
+          pin: 1,
+          email: 1,
+          roles: 1,
+          _2fa: 1,
+        },
+      },
+    );
     return respDb ?? null;
   }
 
@@ -73,7 +90,12 @@ export default class MongoAuthRepository implements AuthRepository {
     const objectId = new ObjectId(userId);
     const result = await this.userCollection.updateOne(
       { _id: objectId },
-      { $set: { password: newPassword } },
+      {
+        $set: { password: newPassword },
+        $push: {
+          oldPasswords: newPassword,
+        } as any,
+      },
     );
 
     if (result.modifiedCount === 0) {

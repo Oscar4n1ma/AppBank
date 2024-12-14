@@ -12,12 +12,12 @@ export class RecoveryPasswordService {
   async use(email: string) {
     const credentialsFound = await this.authRepository.findIdByEmail(email);
     if (!credentialsFound) {
-      throw new NotFoundException('El correo no existe');
+      throw new NotFoundException('El correo no existe.');
     }
     const id = credentialsFound._id;
     const jwtSecret = process.env.SECRET_KEY_JWT;
-    const token = sign({ id }, jwtSecret);
-    //this.mailService.sendChangePasswordEmail(email, token);
+    const token = sign({ id }, jwtSecret, { expiresIn: 120 });
+    this.mailService.sendChangePasswordEmail(email, token);
     return `Correo enviado a ${email}`;
   }
 }

@@ -12,21 +12,22 @@ export class GetUserInfoService {
   ) {}
 
   async use(id: string) {
-    const promises = await Promise.all([
-      this.userRepository.get(id),
-      this.userRepository.getEnterpriseData(id),
-      this.accountRepository.get(id),
-      this.cardRepository.get(id),
-    ]);
-    if (!promises[0]) {
+    const userFound = await this.userRepository.get(id);
+    if (!userFound) {
       throw new NotFoundException('Usuario no encontrado.');
     }
+    const promises = await Promise.all([
+      this.userRepository.getEnterpriseData(userFound.id),
+      this.accountRepository.get(userFound.id),
+      this.cardRepository.get(userFound.id),
+    ]);
+
     return {
-      user: promises[0],
-      enterprise: promises[1],
+      user: userFound,
+      company: promises[0],
       products: {
-        accounts: [promises[2]],
-        cards: [promises[3]],
+        accounts: [promises[1]],
+        cards: [promises[2]],
       },
     };
   }

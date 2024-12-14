@@ -63,7 +63,7 @@ export class MailService {
   async sendChangePasswordEmail(email: string, token: string) {
     try {
       // Construye el enlace completo con el token
-      const recoveryLink = `http://localhost:4000/forms/newpass?t=${token}`;
+      const recoveryLink = `${process.env.URL_REDIRECT_RECOVER}?t=${token}`;
       await this.transporter.sendMail({
         from: '"AppBank" <appbankinfo@gmail.com>',
         to: email,

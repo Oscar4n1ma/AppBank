@@ -32,23 +32,34 @@ export default class MongoUserRepository implements UserRepository {
   }
 
   async get(id: string) {
-    const respDb = await this.userCollection.findOne(
-      {
-        _id: new ObjectId(id),
-        deletedAt: null,
+    let query = {};
+    if (ObjectId.isValid(id)) {
+      query = { _id: new ObjectId(id), deletedAt: null };
+    } else {
+      query = {
+        $and: [
+          {
+            $or: [
+              { username: id },
+              { email: id },
+              { 'data.documentNumber': id },
+            ],
+          },
+          { deletedAt: null },
+        ],
+      };
+    }
+    const respDb = await this.userCollection.findOne(query, {
+      projection: {
+        password: 0,
+        _id: 0,
+        pin: 0,
+        oldPasswords: 0,
+        deletedAt: 0,
+        permissions: 0,
+        roles: 0,
       },
-      {
-        projection: {
-          password: 0,
-          _id: 0,
-          pin: 0,
-          oldPasswords: 0,
-          deletedAt: 0,
-          permissions: 0,
-          roles: 0,
-        },
-      },
-    );
+    });
     return respDb;
   }
 

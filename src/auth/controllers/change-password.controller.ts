@@ -23,6 +23,7 @@ export class ChangePasswordController {
       );
       return {
         error: false,
+        msg: null,
         data: res,
       };
     } catch (error) {
