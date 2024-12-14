@@ -51,7 +51,10 @@ export default class MongoTransactionRepository {
 
   async getTransaction(id: string) {
     const respDb = await this.transactionCollection.findOne({
-      _id: new ObjectId(id),
+      $or: [
+        { _id: ObjectId.isValid(id) ? new ObjectId(id) : undefined },
+        { reference1: id },
+      ],
     });
     return respDb;
   }
