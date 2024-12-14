@@ -11,6 +11,8 @@ import { MailModule } from 'src/mail/mail.module';
 import { OtpModule } from 'src/otp-service/otp.module';
 import { ProductModule } from 'src/product/product.module';
 import { UtilsModule } from 'src/utils/utils.module';
+import { UpdateUserService } from './services/update-user.service';
+import { UpdateUserController } from './controllers/update-user.controller';
 
 @Module({
   imports: [
@@ -24,14 +26,15 @@ import { UtilsModule } from 'src/utils/utils.module';
     CreateUserController,
     GetUserInfoController,
     DeleteUserController,
+    UpdateUserController,
   ],
   exports: [MongoUserRepository],
   providers: [
     DeleteUserService,
     MongoUserRepository,
     CreateUserService,
-
     GetUserInfoService,
+    UpdateUserService,
   ],
 })
 export class UsersModule {}

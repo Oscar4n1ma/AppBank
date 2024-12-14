@@ -134,4 +134,14 @@ export default class MongoUserRepository implements UserRepository {
       await session.endSession();
     }
   }
+
+  async update(id: string, updateFields: any) {
+    const result = await this.userCollection.findOneAndUpdate(
+      { _id: new ObjectId(id), deletedAt: null },
+      { $set: updateFields },
+      { returnDocument: 'after' },
+    );
+
+    return result;
+  }
 }
