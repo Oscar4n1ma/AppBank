@@ -8,6 +8,20 @@ import {
 import { verify } from 'jsonwebtoken';
 import { ErrorHandler } from 'src/utils/error-handler';
 
+const getCookies = (s: string): Record<string, string> => {
+  const output = {};
+  const cookies = s.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const c = cookies[i];
+    const k = c.split('=');
+    if (k.length !== 2) {
+      throw new Error('Cookie string malformed.');
+    }
+    output[k[0].trim()] = k[1].trim();
+  }
+  return output;
+};
+
 @Injectable()
 export class AccessGuard implements CanActivate {
   constructor(private readonly errorHandler: ErrorHandler) {}
@@ -21,9 +35,11 @@ export class AccessGuard implements CanActivate {
           'Debes tener una sesion iniciada para continuar.',
         );
       }
-      // Obtengo y verifico que exista el token.
+      // Obtengo y verifico que exista el token
       const auth = req.headers.authorization;
-      const token = auth?.split(' ').pop();
+      const cookies = getCookies(req.headers.cookie);
+      const token = cookies.tk ?? auth?.split(' ').pop();
+
       if (!token) {
         throw new BadRequestException(
           'Debes proporcionar un token para poder continuar.',
