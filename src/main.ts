@@ -19,7 +19,7 @@ declare module 'express-session' {
       email: string;
       userId: string;
       accessToken: string;
-      roles: Array<{ id: number }>;
+      roles: Array<number>;
       userAgent: string;
     };
   }

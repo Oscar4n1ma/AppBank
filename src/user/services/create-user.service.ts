@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { hash, genSalt } from 'bcrypt';
 import MongoUserRepository from '../repositories/MongoUserRepository';
-import { Roles } from 'src/enums/roles.enum';
+import { Role } from 'src/enums/roles.enum';
 import { UserState } from 'src/enums/user-status.enum';
 import { ObjectId } from 'mongodb';
 import { Account } from 'src/product/entities/Account';
@@ -41,7 +41,7 @@ export class CreateUserService {
       email: user.email,
       password: hashedPassword,
       _2fa: false,
-      roles: [Roles.Client],
+      roles: [Role.Client],
       oldPasswords: [hashedPassword],
       pin: hashedPin,
       permissions: [],
