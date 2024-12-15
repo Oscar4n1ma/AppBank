@@ -79,7 +79,6 @@ export class CreateTransactionService {
       );
     }
     const _4x1000: number = jobs[0]._4x1000 ? amount * 0.004 : 0;
-
     const transferCost: number = jobs[0].transferCost;
     const createdAt: Date = new Date();
     const referenceNumber = generateRandomKey(10);

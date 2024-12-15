@@ -16,7 +16,7 @@ export class Client implements User {
     firstName: string;
     lastName: string;
     documentNumber: string;
-    documnentTypeId: number;
+    documentTypeId: number;
     phoneNumber: string;
     address: string;
     monthlyIncome: string;

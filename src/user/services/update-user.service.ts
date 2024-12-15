@@ -31,7 +31,5 @@ export class UpdateUserService {
     if (!updatedUser) {
       throw new NotFoundException('Usuario no encontrado o ya eliminado.');
     }
-
-    return updatedUser;
   }
 }
