@@ -13,6 +13,9 @@ import { ProductModule } from 'src/product/product.module';
 import { UtilsModule } from 'src/utils/utils.module';
 import { UpdateUserService } from './services/update-user.service';
 import { UpdateUserController } from './controllers/update-user.controller';
+import { UpdatePasswordController } from './controllers/update-password.controller';
+import { UpdatePasswordService } from './services/update-password.service';
+import MongoAuthRepository from 'src/auth/MongoAuthRepository';
 
 @Module({
   imports: [
@@ -27,6 +30,7 @@ import { UpdateUserController } from './controllers/update-user.controller';
     GetUserInfoController,
     DeleteUserController,
     UpdateUserController,
+    UpdatePasswordController,
   ],
   exports: [MongoUserRepository],
   providers: [
@@ -35,6 +39,8 @@ import { UpdateUserController } from './controllers/update-user.controller';
     CreateUserService,
     GetUserInfoService,
     UpdateUserService,
+    UpdatePasswordService,
+    MongoAuthRepository,
   ],
 })
 export class UsersModule {}
