@@ -11,8 +11,8 @@ import { VerifyFieldService } from './services/verify-field.service';
 import { VerifyFieldController } from './controllers/verify-field.controller';
 import { RecoveryPasswordController } from './controllers/recovery-password.controller';
 import { RecoveryPasswordService } from './services/recovery-password.service';
-import { ChangePasswordController } from './controllers/change-password.controller';
-import { ChangePasswordService } from './services/change-password.service';
+import { ResetPasswordController } from './controllers/reset-password.controller';
+import { ResetPasswordService } from './services/reset-password.service';
 import { ConfirmAccountController } from './controllers/confirm-account.controller';
 import { ConfirmAccountService } from './services/confirm-account.service';
 import { MongoClientModule } from 'src/config/mongo-client.module';
@@ -28,7 +28,7 @@ import { LogoutController } from './controllers/logout.controller';
     Verify2FaController,
     VerifyFieldController,
     RecoveryPasswordController,
-    ChangePasswordController,
+    ResetPasswordController,
     ConfirmAccountController,
     LogoutController,
   ],
@@ -41,7 +41,7 @@ import { LogoutController } from './controllers/logout.controller';
     OtpService,
     MongoOtpsRepository,
     RecoveryPasswordService,
-    ChangePasswordService,
+    ResetPasswordService,
     ConfirmAccountService,
   ],
 })

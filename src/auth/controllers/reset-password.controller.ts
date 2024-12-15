@@ -1,12 +1,12 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common';
-import { ChangePasswordService } from '../services/change-password.service';
+import { ResetPasswordService } from '../services/reset-password.service';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { ErrorHandler } from 'src/utils/error-handler';
 
-@Controller('change-password')
-export class ChangePasswordController {
+@Controller('reset-password')
+export class ResetPasswordController {
   constructor(
-    private changePasswordService: ChangePasswordService,
+    private resetPasswordService: ResetPasswordService,
     private readonly errorHandler: ErrorHandler,
   ) {}
 
@@ -17,7 +17,7 @@ export class ChangePasswordController {
   ) {
     try {
       const tokenSplited = token.split(' ').pop();
-      await this.changePasswordService.use(changePassword, tokenSplited);
+      await this.resetPasswordService.use(changePassword, tokenSplited);
       return {
         error: false,
         msg: null,

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { compare, hash, genSalt } from 'bcrypt';
@@ -12,14 +13,19 @@ export class UpdatePasswordService {
   constructor(private readonly authRepository: MongoAuthRepository) {}
   async use(id: string, changePass: ChangePassDto) {
     const { currentPass, newPass } = changePass;
-    const { password, oldPasswords } =
-      await this.authRepository.findCredentials({
-        username: id,
-        password: '',
-      });
+
+    const credentialsFound = await this.authRepository.findCredentials({
+      username: id,
+      password: '',
+    });
+
+    if (!credentialsFound) {
+      throw new NotFoundException('El usuario no ha sido encontrado');
+    }
+    const { password, oldPasswords } = credentialsFound;
     const validation: boolean = await compare(currentPass, password);
     if (!validation) {
-      throw new UnauthorizedException('Credenciales incorrectas.');
+      throw new UnauthorizedException('La contraseña actual es incorrecta.');
     }
 
     for (let i = 0; i < oldPasswords.length; i++) {

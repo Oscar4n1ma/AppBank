@@ -15,8 +15,8 @@ export class RecoveryPasswordService {
       throw new NotFoundException('El correo no existe.');
     }
     const id = credentialsFound._id;
-    const jwtSecret = process.env.SECRET_KEY_JWT;
-    const token = sign({ id }, jwtSecret, { expiresIn: 120 });
+    const jwtSecret = process.env.SECRET_KEY_RESET_PASS_JWT;
+    const token = sign({ id }, jwtSecret, { expiresIn: 160 });
     this.mailService.sendChangePasswordEmail(email, token);
     return `Correo enviado a ${email}`;
   }

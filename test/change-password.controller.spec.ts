@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { ChangePasswordController } from 'src/auth/controllers/change-password.controller';
-import { ChangePasswordService } from 'src/auth/services/change-password.service';
+import { ChangePasswordController } from 'src/auth/controllers/reset-password.controller';
+import { ChangePasswordService } from 'src/auth/services/reset-password.service';
 import { ErrorHandler } from 'src/utils/error-handler';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';

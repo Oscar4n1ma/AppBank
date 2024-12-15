@@ -5,16 +5,17 @@ import { ChangePasswordDto } from '../dto/change-password.dto';
 import { hash, genSalt, compare } from 'bcrypt';
 
 @Injectable()
-export class ChangePasswordService {
+export class ResetPasswordService {
   constructor(private readonly authRepository: MongoAuthRepository) {}
   async use(changePassword: ChangePasswordDto, t: string) {
     const { newPassword, confirmNewPassword } = changePassword;
-    const jwtSecret = process.env.SECRET_KEY_JWT;
-
+    const jwtSecret = process.env.SECRET_KEY_RESET_PASS_JWT;
+    console.log(jwtSecret);
     if (newPassword != confirmNewPassword) {
       throw new BadRequestException('Las contraseñas no son iguales.');
     }
     const { id: extractedId } = verify(t, jwtSecret) as { id: string };
+
     const { oldPasswords } = await this.authRepository.findCredentials({
       username: extractedId,
       password: '',
