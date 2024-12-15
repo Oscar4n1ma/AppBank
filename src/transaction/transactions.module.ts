@@ -22,6 +22,7 @@ import { GetReceiptService } from './services/get-receipt.service';
     UtilsModule,
     MailModule,
   ],
+  exports: [MongoTransactionRepository],
   controllers: [
     CreateTransactionController,
     GetMovementsController,

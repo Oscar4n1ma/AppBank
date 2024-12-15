@@ -47,7 +47,7 @@ export class CreateUserService {
       permissions: [],
       state: UserState.DEACTIVATE,
       data: {
-        documnentNumber: user.documentNumber,
+        documentNumber: user.documentNumber,
         documnentTypeId: user.documentTypeId,
         phoneNumber: user.phoneNumber,
         genre: user.genre,

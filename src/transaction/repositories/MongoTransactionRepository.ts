@@ -17,9 +17,26 @@ export default class MongoTransactionRepository {
   }
 
   async getMovements(id: string) {
+    const initDate = new Date();
+    initDate.setUTCDate(1);
+    initDate.setUTCMinutes(0);
+    initDate.setUTCHours(0);
+    initDate.setUTCSeconds(0);
+    initDate.setUTCMilliseconds(0);
+
     const respDb = await this.movementsCollection
       .find(
-        { productId: id, deletedAt: null },
+        {
+          $and: [
+            {
+              productId: id,
+            },
+            {
+              deletedAt: null,
+            },
+            { createdAt: { $gte: initDate } },
+          ],
+        },
         {
           projection: {
             _id: 0,

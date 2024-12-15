@@ -15,7 +15,7 @@ export class Client implements User {
   data: {
     firstName: string;
     lastName: string;
-    documnentNumber: string;
+    documentNumber: string;
     documnentTypeId: number;
     phoneNumber: string;
     address: string;
