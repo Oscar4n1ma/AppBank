@@ -50,7 +50,7 @@ export class GenerateExtractService {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=extract_${id}.pdf`,
+      `attachment; filename=extract_${id}_${user.documentNumber}.pdf`,
     );
     doc.pipe(res);
 

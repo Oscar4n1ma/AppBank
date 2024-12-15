@@ -17,14 +17,11 @@ export class ChangePasswordController {
   ) {
     try {
       const tokenSplited = token.split(' ').pop();
-      const res = await this.changePasswordService.use(
-        changePassword,
-        tokenSplited,
-      );
+      await this.changePasswordService.use(changePassword, tokenSplited);
       return {
         error: false,
         msg: null,
-        data: res,
+        data: 'Contraseña cambiada.',
       };
     } catch (error) {
       this.errorHandler.use(error);

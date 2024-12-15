@@ -30,6 +30,5 @@ export class ChangePasswordService {
 
     const hashedPassword = await hash(newPassword, await genSalt());
     await this.authRepository.updatePasswordById(extractedId, hashedPassword);
-    return 'Contraseña actualizada exitosamente';
   }
 }
