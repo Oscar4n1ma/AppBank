@@ -41,7 +41,7 @@ export const CONFIG_HELMET: HelmetOptions = {
 
 export const CONFIG_SESSION: SessionOptions = {
   name: 's.id',
-  secret: 'AOSFHKAJFHKAHFKAHFAS09F7AS0F',
+  secret: process.env.SECRET_KEY_SESSION,
   resave: false,
   saveUninitialized: false,
   rolling: true, // Permite refrescar la sesion en caso de una interaccion
